@@ -15,7 +15,7 @@ import java.util.*
 
 const val RC_SIGN_IN = 9001
 const val FIREBASE_ID_CONFIG = "firebase_id"
-const val CONFIG_FILE = "onfig.properties"
+const val CONFIG_FILE = "config.properties"
 
 class FirebaseAuthHelper(private val context: Context?) {
 
@@ -24,6 +24,11 @@ class FirebaseAuthHelper(private val context: Context?) {
 
     fun user(): FirebaseUser? {
         return mAuth.currentUser
+    }
+
+    fun isLoggedIn(): Boolean {
+        val user = this.user()
+        return user != null
     }
 
     fun auth(): FirebaseAuth? {

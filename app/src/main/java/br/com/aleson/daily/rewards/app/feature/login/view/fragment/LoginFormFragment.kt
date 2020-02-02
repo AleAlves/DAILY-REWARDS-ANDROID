@@ -50,6 +50,10 @@ class LoginFormFragment : BaseFragment() {
 
         viewModel?.init()
 
+        if (firebaseAuthHelper.isLoggedIn()) {
+            super.showToast(context, "Already Logged")
+        }
+
         viewModel?.loadPublicKey()
 
         viewModel?.publicKey?.observe(this, Observer<PublicKey> { response ->
