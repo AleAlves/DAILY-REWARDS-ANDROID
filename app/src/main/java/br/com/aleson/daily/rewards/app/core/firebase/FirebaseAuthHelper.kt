@@ -53,8 +53,7 @@ class FirebaseAuthHelper(private val context: Context?) {
         val properties = Properties()
         val inputStream = context?.assets?.open(CONFIG_FILE)
         properties.load(inputStream)
-        val id = properties.getProperty(FIREBASE_ID_CONFIG)
-        return id
+        return properties.getProperty(FIREBASE_ID_CONFIG)
     }
 
     fun authWithGoogle(
@@ -66,9 +65,8 @@ class FirebaseAuthHelper(private val context: Context?) {
         val task = GoogleSignIn.getSignedInAccountFromIntent(data)
         val account = task.getResult(ApiException::class.java)
         val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
-        mAuth.signInWithCredential(credential)
-            ?.addOnCompleteListener(activity) { task ->
-                if (task.isSuccessful) {
+        mAuth.signInWithCredential(credential).addOnCompleteListener(activity) { loginAttempt ->
+            if (loginAttempt.isSuccessful) {
                     this.user()?.let { onSuccess(it) }
                 } else {
                     onFail()

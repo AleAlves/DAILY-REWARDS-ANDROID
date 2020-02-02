@@ -50,19 +50,23 @@ class LoginFormFragment : BaseFragment() {
 
         viewModel?.init()
 
-        if (firebaseAuthHelper.isLoggedIn()) {
-            super.showToast(context, "Already Logged")
-        }
-
-        viewModel?.loadPublicKey()
-
         viewModel?.publicKey?.observe(this, Observer<PublicKey> { response ->
             this.textiviewVersion.text = response.publicKey
+        })
+
+        viewModel?.sesssionToken?.observe(this, Observer {
+            showToast(context, "login")
         })
 
         view.findViewById<SignInButton>(R.id.login_frag_button_signin).setOnClickListener {
             signIn()
         }
+
+        if (firebaseAuthHelper.isLoggedIn()) {
+            viewModel?.user?.value = firebaseAuthHelper.user()
+            firebaseAuthHelper.auth()?.uid?.let { viewModel?.loadPublicKey(it) }
+        }
+
     }
 
     override fun getFragmentTag(): String {
@@ -97,8 +101,9 @@ class LoginFormFragment : BaseFragment() {
         }
     }
 
-    private fun login(firebaseUser: FirebaseUser) {
-        firebaseUser.displayName?.let { super.showToast(context, it) }
+    private fun login(user: FirebaseUser) {
+        viewModel?.user?.value = firebaseAuthHelper.user()
+        viewModel?.loadPublicKey(user.uid)
     }
 
 }
