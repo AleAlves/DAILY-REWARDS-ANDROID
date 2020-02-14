@@ -8,7 +8,7 @@ import com.google.firebase.auth.FirebaseUser
 class LoginUseCase(private val repository: Repository) {
 
     fun login(
-        accessToken: String,
+        accessToken: String?,
         firebaseUser: FirebaseUser?,
         onResponse: (SessionToken?) -> Unit,
         onError: () -> Unit
@@ -19,7 +19,14 @@ class LoginUseCase(private val repository: Repository) {
             firebaseUser?.photoUrl.toString(),
             firebaseUser?.uid
         )
-        repository.requestLogin(accessToken, user, onResponse, onError)
+        accessToken?.let { repository.requestLogin(it, user, onResponse, onError) }
     }
 
+}
+
+interface Callback {
+
+    fun onResponse()
+
+    fun onError(){}
 }

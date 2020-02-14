@@ -10,7 +10,7 @@ class APIsProvider {
 
     companion object {
 
-        fun publicKeyService(): LoginServices? {
+        fun loginServices(): LoginServices? {
             return APIServiceClient.createService(
                 SERVER_URL,
                 makeOkHttpClient(),

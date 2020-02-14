@@ -45,7 +45,6 @@ class FirebaseAuthHelper(private val context: Context?) {
             .requestIdToken(getID())
             .requestEmail()
             .build()
-
         this.googleSignInClient = context?.let { GoogleSignIn.getClient(it, gso) }
     }
 

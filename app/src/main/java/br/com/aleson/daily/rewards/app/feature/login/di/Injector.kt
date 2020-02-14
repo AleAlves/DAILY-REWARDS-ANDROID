@@ -13,8 +13,8 @@ class Injector {
     companion object {
 
         private var core: CoreToolsBuilder =
-            CoreToolsBuilder.Builder().server("http://192.168.0.18:8084/").build()
-        private var repository: Repository = Repository(APIsProvider.publicKeyService(), core)
+                CoreToolsBuilder.Builder().server("http://192.168.0.11:8084/").build()
+        private var repository: Repository = Repository(APIsProvider.loginServices(), core)
 
         fun provideLoginViewModelFactory(): LoginViewModelFactory {
             return LoginViewModelFactory(

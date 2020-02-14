@@ -7,6 +7,11 @@ import br.com.aleson.daily.rewards.app.feature.login.repository.Repository
 class PublicKeyUseCase(private val repository: Repository) {
 
     fun getPublicKey(onResponse: (PublicKey?) -> Unit, onError: () -> Unit) {
-        repository.requestPublicKeyCallback(onResponse, onError)
+
+        var response: (PublicKey?) -> Unit = {
+            onResponse(it)
+        }
+
+        repository.requestPublicKeyCallback(response, onError)
     }
 }

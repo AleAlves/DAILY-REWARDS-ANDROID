@@ -10,12 +10,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import br.com.aleson.core.tools.coretools.cryptography.model.PublicKey
 import br.com.aleson.daily.rewards.app.R
 import br.com.aleson.daily.rewards.app.core.base.BaseFragment
 import br.com.aleson.daily.rewards.app.core.firebase.FirebaseAuthHelper
 import br.com.aleson.daily.rewards.app.core.firebase.RC_SIGN_IN
+import br.com.aleson.daily.rewards.app.feature.home.HomeActivity
 import br.com.aleson.daily.rewards.app.feature.login.di.Injector
+import br.com.aleson.daily.rewards.app.feature.login.view.viewstate.LoginViewEvent
+import br.com.aleson.daily.rewards.app.feature.login.view.viewstate.LoginViewState
 import br.com.aleson.daily.rewards.app.feature.login.viewmodel.LoginViewModel
 import com.google.android.gms.common.SignInButton
 import com.google.firebase.auth.FirebaseUser
@@ -23,8 +25,8 @@ import com.google.firebase.auth.FirebaseUser
 
 class LoginFormFragment : BaseFragment() {
 
-    private lateinit var textiviewVersion: TextView
     private var viewModel: LoginViewModel? = null
+    private lateinit var textiviewVersion: TextView
     private lateinit var firebaseAuthHelper: FirebaseAuthHelper
 
     override fun onCreateView(
@@ -34,39 +36,49 @@ class LoginFormFragment : BaseFragment() {
         return inflater.inflate(R.layout.fragment_login_form, container, false)
     }
 
+    override fun init() {
+        this.firebaseAuthHelper = FirebaseAuthHelper(context)
+        this.firebaseAuthHelper.iniGoogleSignInClient(context)
+        this.varifyLogin()
+    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onBindView(view: View) {
 
-        firebaseAuthHelper = FirebaseAuthHelper(context)
-
-        textiviewVersion = view.findViewById(R.id.textview_version)
-
-        viewModel = ViewModelProviders.of(this,
-            activity?.baseContext?.let { Injector.provideLoginViewModelFactory() })
-            .get(LoginViewModel::class.java)
-
-        firebaseAuthHelper.iniGoogleSignInClient(context)
-
-        viewModel?.init()
-
-        viewModel?.publicKey?.observe(this, Observer<PublicKey> { response ->
-            this.textiviewVersion.text = response.publicKey
-        })
-
-        viewModel?.sesssionToken?.observe(this, Observer {
-            showToast(context, "login")
-        })
+        this.textiviewVersion = view.findViewById(R.id.textview_version)
 
         view.findViewById<SignInButton>(R.id.login_frag_button_signin).setOnClickListener {
             signIn()
         }
+    }
 
-        if (firebaseAuthHelper.isLoggedIn()) {
-            viewModel?.user?.value = firebaseAuthHelper.user()
-            firebaseAuthHelper.auth()?.uid?.let { viewModel?.loadPublicKey(it) }
-        }
+    override fun setupViewModel() {
 
+        this.viewModel = ViewModelProviders.of(this, activity?.baseContext?.let {
+            Injector.provideLoginViewModelFactory()
+        }).get(LoginViewModel::class.java)
+
+        this.viewModel?.init()
+    }
+
+
+    override fun oberserverStates() {
+
+        this.viewModel?.viewState?.observe(this, Observer {
+            when (it) {
+                is LoginViewState.ShowLoading -> super.showLoading()
+                is LoginViewState.HideLoading -> super.hideLoading()
+                is LoginViewState.OnError -> super.showToast(context, "Error")
+            }
+        })
+    }
+
+    override fun oberserverEvent() {
+
+        this.viewModel?.viewEvent?.observe(this, Observer {
+            when (it) {
+                is LoginViewEvent.OnReceiveSessionToken -> navigateHome()
+            }
+        })
     }
 
     override fun getFragmentTag(): String {
@@ -79,6 +91,13 @@ class LoginFormFragment : BaseFragment() {
 
     override fun getFragmentLayout(): Int {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    private fun varifyLogin() {
+        if (this.firebaseAuthHelper.isLoggedIn()) {
+            this.viewModel?.user?.value = firebaseAuthHelper.user()
+            viewModel?.loadPublicKey(this.firebaseAuthHelper.auth()?.uid!!)
+        }
     }
 
     private fun signIn() {
@@ -101,9 +120,13 @@ class LoginFormFragment : BaseFragment() {
         }
     }
 
-    private fun login(user: FirebaseUser) {
-        viewModel?.user?.value = firebaseAuthHelper.user()
-        viewModel?.loadPublicKey(user.uid)
+    private fun login(user: FirebaseUser?) {
+        this.viewModel?.user?.value = firebaseAuthHelper.user()
+        user?.uid?.let { this.viewModel?.loadPublicKey(it) }
+    }
+
+    private fun navigateHome() {
+        startActivity(Intent(activity, HomeActivity::class.java))
     }
 
 }

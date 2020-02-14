@@ -9,6 +9,6 @@ data class User(
     val email: String?,
     @SerializedName("picture")
     val picture: String?,
-    @SerializedName("firebaseID")
-    val firebaseID: String?
+    @SerializedName("uid")
+    val uid: String?
 )
