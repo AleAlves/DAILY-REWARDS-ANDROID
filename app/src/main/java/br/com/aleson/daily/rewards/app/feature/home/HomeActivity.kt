@@ -22,6 +22,7 @@ class HomeActivity : AppCompatActivity(), BaseRecyclerListener<User> {
         recyclerViewAdapter.layoutManager = LinearLayoutManager(this)
         recyclerViewAdapter.adapter = adapter
         val mutableList = mutableListOf<User>()
+
         mutableList.add(User("Aleson", "aleson", "aleson", "aleson"))
         mutableList.add(User("Aleson", "aleson", "aleson", "aleson"))
         mutableList.add(User("Aleson", "aleson", "aleson", "aleson"))
