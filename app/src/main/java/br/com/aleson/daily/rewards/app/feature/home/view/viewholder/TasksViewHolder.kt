@@ -1,4 +1,4 @@
-package br.com.aleson.daily.rewards.app.feature.home
+package br.com.aleson.daily.rewards.app.feature.home.view.viewholder
 
 import android.view.View
 import android.widget.TextView
@@ -8,7 +8,7 @@ import br.com.aleson.daily.rewards.app.core.ui.BaseRecyclerListener
 import br.com.aleson.daily.rewards.app.core.ui.GenericBinder
 import br.com.aleson.daily.rewards.app.feature.login.model.User
 
-class UserViewHolder(view: View) : RecyclerView.ViewHolder(view), GenericBinder<User> {
+class TasksViewHolder(view: View) : RecyclerView.ViewHolder(view), GenericBinder<User> {
 
     private val name: TextView = view.findViewById(R.id.name)
 

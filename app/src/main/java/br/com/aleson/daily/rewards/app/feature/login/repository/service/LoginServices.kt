@@ -1,4 +1,4 @@
-package br.com.aleson.daily.rewards.app.feature.login.repository.api
+package br.com.aleson.daily.rewards.app.feature.login.repository.service
 
 import br.com.aleson.core.tools.coretools.cryptography.model.PublicKey
 import br.com.aleson.core.tools.coretools.retrofit.domain.HTTPRequest

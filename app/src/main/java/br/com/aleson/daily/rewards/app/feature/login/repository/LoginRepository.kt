@@ -4,20 +4,22 @@ import br.com.aleson.core.tools.coretools.CoreToolsBuilder
 import br.com.aleson.core.tools.coretools.cryptography.model.PublicKey
 import br.com.aleson.core.tools.coretools.retrofit.domain.HTTPRequest
 import br.com.aleson.core.tools.coretools.retrofit.domain.HTTPResponse
+import br.com.aleson.daily.rewards.app.core.repository.BaseRepository
+import br.com.aleson.daily.rewards.app.core.session.Session
 import br.com.aleson.daily.rewards.app.feature.login.model.AccessToken
 import br.com.aleson.daily.rewards.app.feature.login.model.SessionToken
 import br.com.aleson.daily.rewards.app.feature.login.model.User
 import br.com.aleson.daily.rewards.app.feature.login.model.UserKeyChain
-import br.com.aleson.daily.rewards.app.feature.login.repository.api.LoginServices
-import br.com.aleson.daily.rewards.app.feature.login.repository.data.RemoteDataSource
+import br.com.aleson.daily.rewards.app.feature.login.repository.data.LoginRemoteDataSource
+import br.com.aleson.daily.rewards.app.feature.login.repository.service.LoginServices
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class Repository(
+class LoginRepository(
     private val loginServices: LoginServices?,
     private val core: CoreToolsBuilder
-) : RemoteDataSource {
+) : BaseRepository(), LoginRemoteDataSource {
 
     override fun requestPublicKeyCallback(onResponse: (PublicKey?) -> Unit, onError: () -> Unit) {
 
@@ -92,7 +94,8 @@ class Repository(
                 call: Call<HTTPResponse<SessionToken>>,
                 response: Response<HTTPResponse<SessionToken>>
             ) {
-                onResponse(response.body()?.data as SessionToken)
+                Session.getInstance()?.setSessionToken(response.body()?.data as SessionToken)
+                onResponse(getSessionToken())
             }
         }
 

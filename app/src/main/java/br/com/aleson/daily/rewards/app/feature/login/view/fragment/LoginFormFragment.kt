@@ -14,8 +14,8 @@ import br.com.aleson.daily.rewards.app.R
 import br.com.aleson.daily.rewards.app.core.base.BaseFragment
 import br.com.aleson.daily.rewards.app.core.firebase.FirebaseAuthHelper
 import br.com.aleson.daily.rewards.app.core.firebase.RC_SIGN_IN
-import br.com.aleson.daily.rewards.app.feature.home.HomeActivity
-import br.com.aleson.daily.rewards.app.feature.login.di.Injector
+import br.com.aleson.daily.rewards.app.feature.home.view.HomeActivity
+import br.com.aleson.daily.rewards.app.feature.login.di.LoginInjector
 import br.com.aleson.daily.rewards.app.feature.login.view.viewstate.LoginViewEvent
 import br.com.aleson.daily.rewards.app.feature.login.view.viewstate.LoginViewState
 import br.com.aleson.daily.rewards.app.feature.login.viewmodel.LoginViewModel
@@ -25,7 +25,7 @@ import com.google.firebase.auth.FirebaseUser
 
 class LoginFormFragment : BaseFragment() {
 
-    private var viewModel: LoginViewModel? = null
+    private lateinit var viewModel: LoginViewModel
     private lateinit var textiviewVersion: TextView
     private lateinit var firebaseAuthHelper: FirebaseAuthHelper
 
@@ -34,12 +34,6 @@ class LoginFormFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_login_form, container, false)
-    }
-
-    override fun init() {
-        this.firebaseAuthHelper = FirebaseAuthHelper(context)
-        this.firebaseAuthHelper.iniGoogleSignInClient(context)
-        this.varifyLogin()
     }
 
     override fun onBindView(view: View) {
@@ -51,13 +45,19 @@ class LoginFormFragment : BaseFragment() {
         }
     }
 
+    override fun setupView() {
+        this.firebaseAuthHelper = FirebaseAuthHelper(context)
+        this.firebaseAuthHelper.iniGoogleSignInClient(context)
+        this.varifyLogin()
+    }
+
     override fun setupViewModel() {
 
         this.viewModel = ViewModelProviders.of(this, activity?.baseContext?.let {
-            Injector.provideLoginViewModelFactory()
+            LoginInjector.provideLoginViewModelFactory()
         }).get(LoginViewModel::class.java)
 
-        this.viewModel?.init()
+        this.viewModel.setup()
     }
 
 

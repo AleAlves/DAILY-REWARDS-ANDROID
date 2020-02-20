@@ -8,9 +8,9 @@ import androidx.fragment.app.Fragment
 
 abstract class BaseFragment : Fragment() {
 
-    abstract fun init()
-
     abstract fun onBindView(view: View)
+
+    abstract fun setupView()
 
     abstract fun setupViewModel()
 
@@ -27,8 +27,8 @@ abstract class BaseFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         this.setupViewModel()
-        this.init()
         this.onBindView(view)
+        this.setupView()
         this.oberserverEvent()
         this.oberserverStates()
     }

@@ -24,7 +24,7 @@ class LoginViewModel(
     val viewState: LiveData<LoginViewState> = state
     val viewEvent: LiveData<LoginViewEvent> = event
 
-    override fun init() {
+    override fun setup() {
 
     }
 

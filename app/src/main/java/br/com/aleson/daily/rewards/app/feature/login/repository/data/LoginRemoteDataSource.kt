@@ -5,7 +5,7 @@ import br.com.aleson.daily.rewards.app.feature.login.model.AccessToken
 import br.com.aleson.daily.rewards.app.feature.login.model.SessionToken
 import br.com.aleson.daily.rewards.app.feature.login.model.User
 
-interface RemoteDataSource {
+interface LoginRemoteDataSource {
 
     fun requestPublicKeyCallback(
         onResponse: (PublicKey?) -> Unit,

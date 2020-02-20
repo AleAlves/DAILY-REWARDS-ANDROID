@@ -4,7 +4,8 @@ import android.content.Context
 import android.content.SharedPreferences
 
 class SharedPreferencesUtil {
-    private val SHARED_ID = "DAILY_REWARDS_SHA_PREF"
+
+    private val SHARED_ID = "DAILY_REWARDS_SHARED_PREFS"
 
     companion object {
         fun getInstance(): SharedPreferencesUtil = SharedPreferencesUtil()
@@ -12,5 +13,9 @@ class SharedPreferencesUtil {
 
     private fun getSharedPreferences(applicationContext: Context): SharedPreferences {
         return applicationContext.getSharedPreferences(SHARED_ID, Context.MODE_PRIVATE)
+    }
+
+    private fun save(){
+
     }
 }

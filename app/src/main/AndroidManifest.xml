@@ -14,8 +14,8 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
-        <activity android:name=".feature.login.view.activity.LoginActivity"></activity>
-        <activity android:name=".feature.home.HomeActivity">
+        <activity android:name=".feature.home.view.HomeActivity"></activity>
+        <activity android:name=".feature.login.view.activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

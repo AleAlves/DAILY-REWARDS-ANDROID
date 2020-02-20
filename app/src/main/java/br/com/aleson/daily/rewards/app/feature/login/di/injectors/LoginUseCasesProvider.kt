@@ -1,6 +1,6 @@
 package br.com.aleson.daily.rewards.app.feature.login.di.injectors
 
-import br.com.aleson.daily.rewards.app.feature.login.repository.Repository
+import br.com.aleson.daily.rewards.app.feature.login.repository.LoginRepository
 import br.com.aleson.daily.rewards.app.feature.login.usecase.AccessTokenUseCase
 import br.com.aleson.daily.rewards.app.feature.login.usecase.LoginUseCase
 import br.com.aleson.daily.rewards.app.feature.login.usecase.PublicKeyUseCase
@@ -9,16 +9,16 @@ class LoginUseCasesProvider {
 
     companion object {
 
-        fun providePulbicKeyCase(repository: Repository): PublicKeyUseCase {
-            return PublicKeyUseCase(repository)
+        fun providePulbicKeyCase(loginRepository: LoginRepository): PublicKeyUseCase {
+            return PublicKeyUseCase(loginRepository)
         }
 
-        fun provideAccessTokenUseCase(repository: Repository): AccessTokenUseCase {
-            return AccessTokenUseCase(repository)
+        fun provideAccessTokenUseCase(loginRepository: LoginRepository): AccessTokenUseCase {
+            return AccessTokenUseCase(loginRepository)
         }
 
-        fun provideLoginUseCase(repository: Repository): LoginUseCase {
-            return LoginUseCase(repository)
+        fun provideLoginUseCase(loginRepository: LoginRepository): LoginUseCase {
+            return LoginUseCase(loginRepository)
         }
     }
 }
