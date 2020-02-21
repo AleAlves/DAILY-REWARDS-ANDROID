@@ -6,17 +6,40 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import br.com.aleson.daily.rewards.app.R
 import br.com.aleson.daily.rewards.app.core.base.BaseFragment
+import br.com.aleson.daily.rewards.app.core.ui.BaseRecyclerListener
+import br.com.aleson.daily.rewards.app.core.ui.BaseRecyclerViewAdapter
 import br.com.aleson.daily.rewards.app.feature.home.di.injector.HomeInjector
+import br.com.aleson.daily.rewards.app.feature.home.model.Tasks
+import br.com.aleson.daily.rewards.app.feature.home.view.viewholder.TasksViewHolder
 import br.com.aleson.daily.rewards.app.feature.home.viewmodel.HomeViewModel
 
 
-class HomeFragment : BaseFragment() {
+class HomeFragment : BaseFragment(), BaseRecyclerListener<Tasks> {
 
     private lateinit var viewModel: HomeViewModel
     private var listener: OnFragmentInteractionListener? = null
+
+    private lateinit var recylerView: RecyclerView
+
+    private var adapter = object : BaseRecyclerViewAdapter<Tasks>(this) {
+
+        override fun getViewHolder(
+            view: View,
+            viewType: Int
+        ): RecyclerView.ViewHolder {
+            return TasksViewHolder(view)
+        }
+
+        override fun getLayoutId(position: Int, obj: Tasks): Int {
+            return R.layout.tasks_holder
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,9 +54,12 @@ class HomeFragment : BaseFragment() {
 
 
     override fun onBindView(view: View) {
+        recylerView = view.findViewById(R.id.recycler_view)
     }
 
     override fun setupView() {
+        recylerView.layoutManager = LinearLayoutManager(context)
+        recylerView.adapter = adapter
     }
 
     override fun setupViewModel() {
@@ -55,6 +81,9 @@ class HomeFragment : BaseFragment() {
     }
 
     override fun oberserverEvent() {
+        viewModel.list?.observe(this, Observer {
+            adapter.add(it)
+        })
     }
 
     override fun getFragmentLayout(): Int {
@@ -78,4 +107,6 @@ class HomeFragment : BaseFragment() {
         fun onFragmentInteraction(uri: Uri)
     }
 
+    override fun onClickListener(data: Tasks, v: View, code: Int) {
+    }
 }

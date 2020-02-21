@@ -37,4 +37,13 @@ class HomeRepository(var homeServices: HomeServices?) : BaseRepository(),
         token?.sessionToken?.let { homeServices?.getTasks(it)?.enqueue(callback) }
     }
 
+    override fun requestTasksCallback(
+        onResponse: Callback<HTTPResponse<List<Tasks>>>,
+        onError: () -> Unit
+    ) {
+        var token = Session.getInstance()?.getSessionToken()
+
+        token?.sessionToken?.let { homeServices?.getTasks(it)?.enqueue(onResponse) }
+    }
+
 }
