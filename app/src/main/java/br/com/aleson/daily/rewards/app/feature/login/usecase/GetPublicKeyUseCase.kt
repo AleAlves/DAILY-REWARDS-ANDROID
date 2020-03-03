@@ -4,7 +4,7 @@ import br.com.aleson.core.tools.coretools.cryptography.model.PublicKey
 import br.com.aleson.daily.rewards.app.feature.login.repository.LoginRepository
 
 
-class PublicKeyUseCase(private val loginRepository: LoginRepository) {
+class GetPublicKeyUseCase(private val loginRepository: LoginRepository) {
 
     fun getPublicKey(onResponse: (PublicKey?) -> Unit, onError: () -> Unit) {
 

@@ -4,17 +4,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import br.com.aleson.core.tools.coretools.cryptography.model.PublicKey
 import br.com.aleson.daily.rewards.app.core.base.BaseViewModel
-import br.com.aleson.daily.rewards.app.feature.login.usecase.AccessTokenUseCase
-import br.com.aleson.daily.rewards.app.feature.login.usecase.LoginUseCase
-import br.com.aleson.daily.rewards.app.feature.login.usecase.PublicKeyUseCase
+import br.com.aleson.daily.rewards.app.feature.login.usecase.GetAccessTokenUseCase
+import br.com.aleson.daily.rewards.app.feature.login.usecase.CallLoginUseCase
+import br.com.aleson.daily.rewards.app.feature.login.usecase.GetPublicKeyUseCase
 import br.com.aleson.daily.rewards.app.feature.login.view.viewstate.LoginViewEvent
 import br.com.aleson.daily.rewards.app.feature.login.view.viewstate.LoginViewState
 import com.google.firebase.auth.FirebaseUser
 
 class LoginViewModel(
-    private val publicKeyCase: PublicKeyUseCase,
-    private val accessTokenUseCase: AccessTokenUseCase,
-    private val loginUseCase: LoginUseCase
+    private val getPublicKeyCase: GetPublicKeyUseCase,
+    private val getAccessTokenUseCase: GetAccessTokenUseCase,
+    private val callLoginUseCase: CallLoginUseCase
 ) : BaseViewModel() {
 
     var user: MutableLiveData<FirebaseUser>? = MutableLiveData()
@@ -34,7 +34,7 @@ class LoginViewModel(
 
     fun loadPublicKey(uid: String) {
         this.state.value = LoginViewState.ShowLoading(false)
-        publicKeyCase.getPublicKey(
+        getPublicKeyCase.getPublicKey(
             onResponse = { publicKey ->
                 if (publicKey != null) {
                     getAccessToken(uid, publicKey)
@@ -47,7 +47,7 @@ class LoginViewModel(
         uid: String,
         publicKey: PublicKey
     ) {
-        accessTokenUseCase.getAccessToken(uid, publicKey.publicKey,
+        getAccessTokenUseCase.getAccessToken(uid, publicKey.publicKey,
             onResponse = { accessToken ->
                 val token = accessToken?.accessToken
                 login(token)
@@ -58,7 +58,7 @@ class LoginViewModel(
     }
 
     private fun login(token: String?) {
-        loginUseCase.login(
+        callLoginUseCase.login(
             token,
             user?.value,
             onResponse = { sessionToken ->

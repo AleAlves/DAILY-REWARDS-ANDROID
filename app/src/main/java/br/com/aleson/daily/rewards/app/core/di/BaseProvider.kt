@@ -1,6 +1,6 @@
 package br.com.aleson.daily.rewards.app.core.di
 
-const val SERVER_URL = "http://192.168.0.11:8084/"
+const val SERVER_URL = "https://daily-rewards-node-api.herokuapp.com/"
 
 open abstract class BaseProvider {
 

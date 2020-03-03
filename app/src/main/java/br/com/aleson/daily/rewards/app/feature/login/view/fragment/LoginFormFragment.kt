@@ -43,6 +43,8 @@ class LoginFormFragment : BaseFragment() {
         view.findViewById<SignInButton>(R.id.login_frag_button_signin).setOnClickListener {
             signIn()
         }
+
+        super.showLoading()
     }
 
     override fun setupView() {
@@ -63,7 +65,7 @@ class LoginFormFragment : BaseFragment() {
 
     override fun oberserverStates() {
 
-        this.viewModel?.viewState?.observe(this, Observer {
+        this.viewModel.viewState.observe(this, Observer {
             when (it) {
                 is LoginViewState.ShowLoading -> super.showLoading()
                 is LoginViewState.HideLoading -> super.hideLoading()
@@ -74,7 +76,7 @@ class LoginFormFragment : BaseFragment() {
 
     override fun oberserverEvent() {
 
-        this.viewModel?.viewEvent?.observe(this, Observer {
+        this.viewModel.viewEvent.observe(this, Observer {
             when (it) {
                 is LoginViewEvent.OnReceiveSessionToken -> navigateHome()
             }

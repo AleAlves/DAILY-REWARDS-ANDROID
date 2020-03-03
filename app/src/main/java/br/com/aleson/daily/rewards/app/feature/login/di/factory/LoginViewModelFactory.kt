@@ -2,19 +2,19 @@ package br.com.aleson.daily.rewards.app.feature.login.di.factory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import br.com.aleson.daily.rewards.app.feature.login.usecase.AccessTokenUseCase
-import br.com.aleson.daily.rewards.app.feature.login.usecase.LoginUseCase
-import br.com.aleson.daily.rewards.app.feature.login.usecase.PublicKeyUseCase
+import br.com.aleson.daily.rewards.app.feature.login.usecase.GetAccessTokenUseCase
+import br.com.aleson.daily.rewards.app.feature.login.usecase.CallLoginUseCase
+import br.com.aleson.daily.rewards.app.feature.login.usecase.GetPublicKeyUseCase
 import br.com.aleson.daily.rewards.app.feature.login.viewmodel.LoginViewModel
 
 
 class LoginViewModelFactory(
-    private val publicKeyCase: PublicKeyUseCase,
-    private val accessTokenUseCase: AccessTokenUseCase,
-    private val loginUseCase: LoginUseCase
+    private val getPublicKeyCase: GetPublicKeyUseCase,
+    private val getAccessTokenUseCase: GetAccessTokenUseCase,
+    private val callLoginUseCase: CallLoginUseCase
 ) :
     ViewModelProvider.NewInstanceFactory() {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T =
-        LoginViewModel(publicKeyCase, accessTokenUseCase, loginUseCase) as T
+        LoginViewModel(getPublicKeyCase, getAccessTokenUseCase, callLoginUseCase) as T
 }

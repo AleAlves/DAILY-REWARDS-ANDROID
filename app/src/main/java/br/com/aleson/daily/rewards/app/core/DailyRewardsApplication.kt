@@ -1,4 +1,4 @@
-package br.com.aleson.daily.rewards.app
+package br.com.aleson.daily.rewards.app.core
 
 import android.app.Application
 

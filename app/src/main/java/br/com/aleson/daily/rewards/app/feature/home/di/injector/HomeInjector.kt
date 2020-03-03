@@ -18,7 +18,10 @@ class HomeInjector {
 
         fun provideHomeViewModelFactory(): HomeViewModelFactory {
 
-            return HomeViewModelFactory(HomeUseCasesProvider.provideGetTasksCase(homeRepository))
+            return HomeViewModelFactory(
+                HomeUseCasesProvider.provideGetTasksCase(homeRepository),
+                HomeUseCasesProvider.provideGetGroupsCase(homeRepository)
+            )
         }
     }
 

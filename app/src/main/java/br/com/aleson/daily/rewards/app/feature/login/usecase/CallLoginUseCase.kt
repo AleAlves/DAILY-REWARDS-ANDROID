@@ -6,7 +6,7 @@ import br.com.aleson.daily.rewards.app.feature.login.model.User
 import br.com.aleson.daily.rewards.app.feature.login.repository.LoginRepository
 import com.google.firebase.auth.FirebaseUser
 
-class LoginUseCase(private val loginRepository: LoginRepository) {
+class CallLoginUseCase(private val loginRepository: LoginRepository) {
 
     fun login(
         accessToken: String?,

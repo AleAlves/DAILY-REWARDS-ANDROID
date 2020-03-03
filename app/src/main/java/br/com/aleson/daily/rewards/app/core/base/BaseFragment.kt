@@ -4,9 +4,8 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 
-abstract class BaseFragment : Fragment() {
+abstract class BaseFragment : BaseDialogFragment() {
 
     abstract fun onBindView(view: View)
 
@@ -38,7 +37,8 @@ abstract class BaseFragment : Fragment() {
     }
 
     fun showLoading() {
-
+        val dialog = super.loading(context!!)
+        dialog?.show()
     }
 
     fun hideLoading() {
