@@ -44,20 +44,20 @@ class LoginViewModel(
                 }
             },
 
-            onError = { onError() })
+            onError = { onError() }
+        )
     }
 
-    private fun getAccessToken(
-        uid: String,
-        publicKey: PublicKey
-    ) {
+    private fun getAccessToken(uid: String, publicKey: PublicKey) {
+
         getAccessTokenUseCase.request = GetAccessTokenRequest(uid, publicKey.publicKey)
 
         getAccessTokenUseCase.execute(
 
             onResponse = { response -> login(response?.accessToken?.value) },
 
-            onError = { onError() })
+            onError = { onError() }
+        )
     }
 
     private fun login(token: String?) {
@@ -71,7 +71,8 @@ class LoginViewModel(
                 this.state.value = LoginViewState.HideLoading(false)
             },
 
-            onError = { onError() })
+            onError = { onError() }
+        )
     }
 
 }

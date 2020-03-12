@@ -11,10 +11,6 @@ abstract class BaseUseCase<Request : UseCaseRequest, Response : UseCaseResponse>
     lateinit var onResponse: ((Response?) -> Unit)
     lateinit var onError: (() -> Unit)
 
-    fun run() {
-        execute(onResponse, onError)
-    }
-
     abstract fun execute(
         onResponse: (Response?) -> Unit,
         onError: () -> Unit
