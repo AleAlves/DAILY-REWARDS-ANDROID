@@ -1,20 +1,22 @@
 package br.com.aleson.daily.rewards.app.feature.login.usecase
 
 import br.com.aleson.daily.rewards.app.feature.login.model.AccessToken
+import br.com.aleson.daily.rewards.app.feature.login.model.SessionToken
 import br.com.aleson.daily.rewards.app.feature.login.repository.LoginRepository
 
-class GetAccessTokenUseCase(private val loginRepository: LoginRepository) {
 
-    fun getAccessToken(
-        uid: String,
-        publicKey: String, //TODO inject publick key in the core module
-        onResponse: (AccessToken?) -> Unit,
-        onError: () -> Unit
-    ) {
+class GetAccessTokenRequest(val uid: String?, val publicKey: String?) : UseCaseRequest
+
+class GetAccessTokenResponse(val accessToken: AccessToken?) : UseCaseResponse
+
+class GetAccessTokenUseCase(private val loginRepository: LoginRepository) :
+    BaseUseCase<GetAccessTokenRequest, GetAccessTokenResponse>() {
+
+    override fun execute(onResponse: (GetAccessTokenResponse?) -> Unit, onError: () -> Unit) {
 
         loginRepository.requestAccessToken(
-            uid,
-            publicKey,
+            request.uid.toString(),
+            request.publicKey.toString(),
             onResponse,
             onError
         )

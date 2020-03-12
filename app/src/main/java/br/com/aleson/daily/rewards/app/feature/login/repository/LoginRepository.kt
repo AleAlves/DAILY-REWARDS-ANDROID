@@ -12,6 +12,9 @@ import br.com.aleson.daily.rewards.app.feature.login.model.User
 import br.com.aleson.daily.rewards.app.feature.login.model.UserKeyChain
 import br.com.aleson.daily.rewards.app.feature.login.repository.data.LoginRemoteDataSource
 import br.com.aleson.daily.rewards.app.feature.login.repository.service.LoginServices
+import br.com.aleson.daily.rewards.app.feature.login.usecase.CallLoginResponse
+import br.com.aleson.daily.rewards.app.feature.login.usecase.GetAccessTokenResponse
+import br.com.aleson.daily.rewards.app.feature.login.usecase.GetPublicKeyResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -21,7 +24,7 @@ class LoginRepository(
     private val core: CoreToolsBuilder
 ) : BaseRepository(), LoginRemoteDataSource {
 
-    override fun requestPublicKeyCallback(onResponse: (PublicKey?) -> Unit, onError: () -> Unit) {
+    override fun requestPublicKeyCallback(onResponse: (GetPublicKeyResponse?) -> Unit, onError: () -> Unit) {
 
         val callback = object : Callback<HTTPResponse<PublicKey>> {
             override fun onFailure(
@@ -35,7 +38,7 @@ class LoginRepository(
                 call: Call<HTTPResponse<PublicKey>>,
                 response: Response<HTTPResponse<PublicKey>>
             ) {
-                onResponse(response.body()?.data as PublicKey)
+                onResponse(GetPublicKeyResponse(response.body()?.data as PublicKey))
             }
         }
 
@@ -45,7 +48,7 @@ class LoginRepository(
     override fun requestAccessToken(
         firebaseToken: String,
         publicKey: String,
-        onResponse: (AccessToken?) -> Unit,
+        onResponse: (GetAccessTokenResponse?) -> Unit,
         onError: () -> Unit
     ) {
         val callback = object : Callback<HTTPResponse<AccessToken>> {
@@ -60,11 +63,11 @@ class LoginRepository(
                 call: Call<HTTPResponse<AccessToken>>,
                 response: Response<HTTPResponse<AccessToken>>
             ) {
-                onResponse(response.body()?.data as AccessToken)
+                onResponse(GetAccessTokenResponse(response.body()?.data as AccessToken))
             }
         }
 
-        var keyChain = UserKeyChain(
+        val keyChain = UserKeyChain(
             core.crypto.AES().key(),
             core.crypto.AES().salt(),
             core.crypto.AES().iv()
@@ -78,7 +81,7 @@ class LoginRepository(
     override fun requestLogin(
         accessToken: String,
         user: User,
-        onResponse: (SessionToken?) -> Unit,
+        onResponse: (CallLoginResponse?) -> Unit,
         onError: () -> Unit
     ) {
 
@@ -95,12 +98,12 @@ class LoginRepository(
                 response: Response<HTTPResponse<SessionToken>>
             ) {
                 Session.getInstance()?.setSessionToken(response.body()?.data as SessionToken)
-                onResponse(getSessionToken())
+                onResponse(CallLoginResponse(getSessionToken()))
             }
         }
 
-        val request = HTTPRequest(core.crypto.AES().encrypt(user))
+        val httpRequest = HTTPRequest(core.crypto.AES().encrypt(user))
 
-        loginServices?.login(accessToken, request)?.enqueue(callback)
+        loginServices?.login(accessToken, httpRequest)?.enqueue(callback)
     }
 }

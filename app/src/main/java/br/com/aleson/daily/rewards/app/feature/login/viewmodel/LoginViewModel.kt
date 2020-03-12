@@ -4,9 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import br.com.aleson.core.tools.coretools.cryptography.model.PublicKey
 import br.com.aleson.daily.rewards.app.core.base.BaseViewModel
-import br.com.aleson.daily.rewards.app.feature.login.usecase.GetAccessTokenUseCase
-import br.com.aleson.daily.rewards.app.feature.login.usecase.CallLoginUseCase
-import br.com.aleson.daily.rewards.app.feature.login.usecase.GetPublicKeyUseCase
+import br.com.aleson.daily.rewards.app.feature.login.usecase.*
 import br.com.aleson.daily.rewards.app.feature.login.view.viewstate.LoginViewEvent
 import br.com.aleson.daily.rewards.app.feature.login.view.viewstate.LoginViewState
 import com.google.firebase.auth.FirebaseUser
@@ -33,40 +31,47 @@ class LoginViewModel(
     }
 
     fun loadPublicKey(uid: String) {
+
         this.state.value = LoginViewState.ShowLoading(false)
-        getPublicKeyCase.getPublicKey(
-            onResponse = { publicKey ->
-                if (publicKey != null) {
-                    getAccessToken(uid, publicKey)
+
+        getPublicKeyCase.execute(
+
+            onResponse = { response ->
+                if (response != null) {
+                    response.publicKey?.let { getAccessToken(uid, it) }
+                } else {
+                    onError()
                 }
             },
+
             onError = { onError() })
     }
 
-    fun getAccessToken(
+    private fun getAccessToken(
         uid: String,
         publicKey: PublicKey
     ) {
-        getAccessTokenUseCase.getAccessToken(uid, publicKey.publicKey,
-            onResponse = { accessToken ->
-                val token = accessToken?.accessToken
-                login(token)
-            },
-            onError = {
-                onError()
-            })
+        getAccessTokenUseCase.request = GetAccessTokenRequest(uid, publicKey.publicKey)
+
+        getAccessTokenUseCase.execute(
+
+            onResponse = { response -> login(response?.accessToken?.value) },
+
+            onError = { onError() })
     }
 
     private fun login(token: String?) {
-        callLoginUseCase.login(
-            token,
-            user?.value,
-            onResponse = { sessionToken ->
-                this.event.value = LoginViewEvent.OnReceiveSessionToken(sessionToken)
+
+        callLoginUseCase.request = CallLoginRequest(user?.value, token)
+
+        callLoginUseCase.execute(
+
+            onResponse = {
+                this.event.value = LoginViewEvent.OnReceiveSessionToken(it?.sessionToken)
                 this.state.value = LoginViewState.HideLoading(false)
-            }, onError = {
-                onError()
-            })
+            },
+
+            onError = { onError() })
     }
 
 }

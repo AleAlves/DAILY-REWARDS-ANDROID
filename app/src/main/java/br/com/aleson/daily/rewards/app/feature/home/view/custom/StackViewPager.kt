@@ -4,10 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
 import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import br.com.aleson.daily.rewards.app.core.ui.StackScroller
 import java.lang.ref.WeakReference
 
-class StackViewPager(context: Context, attrs: AttributeSet) : ViewPager(context, attrs) {
+class StackViewPager(context: Context, attrs: AttributeSet) : ViewPager2(context, attrs) {
 
     val SwipeDirection_RIGHT = 1
     val SwipeDirection_LEFT = 2

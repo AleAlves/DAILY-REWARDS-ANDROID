@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import br.com.aleson.daily.rewards.app.R
 import br.com.aleson.daily.rewards.app.core.base.BaseFragment
 import br.com.aleson.daily.rewards.app.core.ui.*
@@ -104,11 +105,10 @@ class HomeFragment : BaseFragment() {
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         gropuRecylerView.adapter = gorupsAdapter
 
-        viewPager.setScrollDuration(1)
-        viewPager.setPageTransformer(true, ViewPagerStack(context!!))
-        viewPager.setSwipeDirection(0)
-        viewPager.offscreenPageLimit = 4
+        viewPager.setPageTransformer(context?.let { ViewPagerStack(it) })
         viewPager.overScrollMode = View.SCROLL_AXIS_VERTICAL
+        viewPager.adapter = tasksAdapter
+        viewPager.orientation = ViewPager2.ORIENTATION_VERTICAL
     }
 
     override fun setupViewModel() {
@@ -134,8 +134,7 @@ class HomeFragment : BaseFragment() {
 
         viewModel.taskslist?.observe(this, Observer {
             tasksAdapter.add(it)
-            stackPagerAdapter = StackPagerAdapter(context!!, it)
-            viewPager.adapter = stackPagerAdapter
+            viewPager.setCurrentItem(it.size -1 , true)
         })
 
         viewModel.groupslist?.observe(this, Observer {
