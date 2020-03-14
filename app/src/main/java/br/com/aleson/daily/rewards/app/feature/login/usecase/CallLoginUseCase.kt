@@ -1,5 +1,8 @@
 package br.com.aleson.daily.rewards.app.feature.login.usecase
 
+import br.com.aleson.daily.rewards.app.core.base.BaseUseCase
+import br.com.aleson.daily.rewards.app.core.base.UseCaseRequest
+import br.com.aleson.daily.rewards.app.core.base.UseCaseResponse
 import br.com.aleson.daily.rewards.app.feature.login.model.SessionToken
 import br.com.aleson.daily.rewards.app.feature.login.model.User
 import br.com.aleson.daily.rewards.app.feature.login.repository.LoginRepository
@@ -22,8 +25,7 @@ class CallLoginUseCase(private val loginRepository: LoginRepository) :
             request.accessToken.toString(),
             mapUser(request.firebaseUser),
             onResponse,
-            onError
-        )
+            onError)
     }
 
     private fun mapUser(firebaseUser: FirebaseUser?): User {

@@ -1,4 +1,4 @@
-package br.com.aleson.daily.rewards.app.feature.login.usecase
+package br.com.aleson.daily.rewards.app.core.base
 
 
 interface UseCaseRequest

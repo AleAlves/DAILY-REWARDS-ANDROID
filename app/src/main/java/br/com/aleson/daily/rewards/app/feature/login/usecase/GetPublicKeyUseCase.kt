@@ -1,11 +1,15 @@
 package br.com.aleson.daily.rewards.app.feature.login.usecase
 
 import br.com.aleson.core.tools.coretools.cryptography.model.PublicKey
+import br.com.aleson.daily.rewards.app.core.base.BaseUseCase
+import br.com.aleson.daily.rewards.app.core.base.UseCaseRequest
+import br.com.aleson.daily.rewards.app.core.base.UseCaseResponse
 import br.com.aleson.daily.rewards.app.feature.login.repository.LoginRepository
 
 class GetPublicKeynRequest : UseCaseRequest
 
-class GetPublicKeyResponse(val publicKey: PublicKey?) : UseCaseResponse
+class GetPublicKeyResponse(val publicKey: PublicKey?) :
+    UseCaseResponse
 
 class GetPublicKeyUseCase(private val loginRepository: LoginRepository) :
     BaseUseCase<GetPublicKeynRequest, GetPublicKeyResponse>() {

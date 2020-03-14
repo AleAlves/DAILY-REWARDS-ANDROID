@@ -4,6 +4,7 @@ package br.com.aleson.daily.rewards.app.feature.login.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +15,10 @@ import br.com.aleson.daily.rewards.app.R
 import br.com.aleson.daily.rewards.app.core.base.BaseFragment
 import br.com.aleson.daily.rewards.app.core.firebase.FirebaseAuthHelper
 import br.com.aleson.daily.rewards.app.core.firebase.RC_SIGN_IN
+import br.com.aleson.daily.rewards.app.core.ui.BaseBottomSheetDialog
 import br.com.aleson.daily.rewards.app.feature.home.view.HomeActivity
 import br.com.aleson.daily.rewards.app.feature.login.di.LoginInjector
+import br.com.aleson.daily.rewards.app.feature.login.view.viewholder.EnviromentViewHolder
 import br.com.aleson.daily.rewards.app.feature.login.view.viewstate.LoginViewEvent
 import br.com.aleson.daily.rewards.app.feature.login.view.viewstate.LoginViewState
 import br.com.aleson.daily.rewards.app.feature.login.viewmodel.LoginViewModel
@@ -28,6 +31,21 @@ class LoginFormFragment : BaseFragment() {
     private lateinit var viewModel: LoginViewModel
     private lateinit var textiviewVersion: TextView
     private lateinit var firebaseAuthHelper: FirebaseAuthHelper
+
+    private var enviromentBottomSheet: BaseBottomSheetDialog<EnviromentViewHolder>? = null
+
+    private val enviromentViewHolder =
+        object : BaseBottomSheetDialog.DialogFragmentCallBack<EnviromentViewHolder> {
+            override fun setViewHolder(): EnviromentViewHolder {
+                val itemView = View.inflate(context, R.layout.enviroment_holder, null)
+                return EnviromentViewHolder(itemView)
+            }
+
+            override fun onBindData(holder: EnviromentViewHolder) {
+                Log.d("", "")
+            }
+
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,7 +67,18 @@ class LoginFormFragment : BaseFragment() {
 
     override fun setupView() {
         this.firebaseAuthHelper = FirebaseAuthHelper(context)
+
         this.firebaseAuthHelper.iniGoogleSignInClient(context)
+
+        this.enviromentBottomSheet =
+            BaseBottomSheetDialog.Builder<EnviromentViewHolder>()
+                .fullScreen(false)
+                .touchOutside(true)
+                .viewHolder(enviromentViewHolder)
+                ?.build()
+
+        this.fragmentManager?.let { this.enviromentBottomSheet?.show(it, this.tag) }
+
         this.varifyLogin()
     }
 
@@ -97,8 +126,8 @@ class LoginFormFragment : BaseFragment() {
 
     private fun varifyLogin() {
         if (this.firebaseAuthHelper.isLoggedIn()) {
-            this.viewModel?.user?.value = firebaseAuthHelper.user()
-            viewModel?.loadPublicKey(this.firebaseAuthHelper.auth()?.uid!!)
+            this.viewModel.user?.value = firebaseAuthHelper.user()
+            viewModel.loadPublicKey(this.firebaseAuthHelper.auth()?.uid!!)
         }
     }
 
@@ -123,8 +152,8 @@ class LoginFormFragment : BaseFragment() {
     }
 
     private fun login(user: FirebaseUser?) {
-        this.viewModel?.user?.value = firebaseAuthHelper.user()
-        user?.uid?.let { this.viewModel?.loadPublicKey(it) }
+        this.viewModel.user?.value = firebaseAuthHelper.user()
+        user?.uid?.let { this.viewModel.loadPublicKey(it) }
     }
 
     private fun navigateHome() {

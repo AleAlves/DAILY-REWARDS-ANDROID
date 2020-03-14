@@ -17,4 +17,6 @@ open class BaseDialogFragment : Fragment() {
         //dialog?.window?.setBackgroundDrawableResource(R.color.)
         return dialog
     }
+
+
 }

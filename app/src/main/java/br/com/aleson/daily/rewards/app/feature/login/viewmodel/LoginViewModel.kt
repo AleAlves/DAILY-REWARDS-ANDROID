@@ -27,6 +27,7 @@ class LoginViewModel(
     }
 
     override fun onError() {
+        this.state.value = LoginViewState.ShowLoading(false)
         this.state.value = LoginViewState.OnError(Exception("Error"))
     }
 
@@ -54,7 +55,10 @@ class LoginViewModel(
 
         getAccessTokenUseCase.execute(
 
-            onResponse = { response -> login(response?.accessToken?.value) },
+            onResponse = { response ->
+                login(response?.accessToken?.value)
+                this.state.value = LoginViewState.ShowLoading(true)
+            },
 
             onError = { onError() }
         )
@@ -68,7 +72,7 @@ class LoginViewModel(
 
             onResponse = {
                 this.event.value = LoginViewEvent.OnReceiveSessionToken(it?.sessionToken)
-                this.state.value = LoginViewState.HideLoading(false)
+                this.state.value = LoginViewState.HideLoading(true)
             },
 
             onError = { onError() }

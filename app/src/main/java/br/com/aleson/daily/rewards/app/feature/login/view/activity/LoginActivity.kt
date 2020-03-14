@@ -6,7 +6,6 @@ import br.com.aleson.daily.rewards.app.core.base.BaseActivity
 
 class LoginActivity : BaseActivity() {
 
-
     override fun getFragmentContainer(): Int {
         return R.id.nav_host
     }
