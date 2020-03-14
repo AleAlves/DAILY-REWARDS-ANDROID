@@ -5,10 +5,11 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import java.lang.Exception
 
 abstract class BaseFragment : BaseDialogFragment() {
 
-    private lateinit var dialog : Dialog
+    private var dialog : Dialog? = null
 
     abstract fun onBindView(view: View)
 
@@ -40,12 +41,20 @@ abstract class BaseFragment : BaseDialogFragment() {
     }
 
     fun showLoading() {
-        dialog = super.loading(context as Context) as Dialog
-        dialog.show()
+        if(dialog == null){
+            dialog = super.loading(context as Context) as Dialog
+        }
+        if (dialog?.isShowing as Boolean){
+            throw Exception("Can't show more than one loading")
+        }
+        else {
+            dialog?.show()
+        }
     }
 
     fun hideLoading() {
-        dialog.dismiss()
+        if (dialog?.isShowing as Boolean)
+            dialog?.dismiss()
     }
 
 }

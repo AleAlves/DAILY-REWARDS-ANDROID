@@ -14,9 +14,7 @@ open class BaseDialogFragment : Fragment() {
         dialog?.requestWindowFeature(1)
         dialog?.setContentView(R.layout.default_loading)
         dialog?.setCancelable(false)
-        //dialog?.window?.setBackgroundDrawableResource(R.color.)
+        dialog?.window?.setBackgroundDrawableResource(R.color.progress_background_transparent)
         return dialog
     }
-
-
 }

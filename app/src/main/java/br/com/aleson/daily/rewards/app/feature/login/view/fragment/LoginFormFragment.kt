@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import br.com.aleson.daily.rewards.app.R
+import br.com.aleson.daily.rewards.app.core.base.BaseAdapterItem
 import br.com.aleson.daily.rewards.app.core.base.BaseFragment
 import br.com.aleson.daily.rewards.app.core.di.BaseProvider
 import br.com.aleson.daily.rewards.app.core.firebase.FirebaseAuthHelper
@@ -23,7 +24,8 @@ import br.com.aleson.daily.rewards.app.core.ui.BaseRecyclerListener
 import br.com.aleson.daily.rewards.app.core.ui.BaseRecyclerViewAdapter
 import br.com.aleson.daily.rewards.app.feature.home.view.HomeActivity
 import br.com.aleson.daily.rewards.app.feature.login.di.LoginInjector
-import br.com.aleson.daily.rewards.app.feature.login.view.viewholder.EnviromentViewHolder
+import br.com.aleson.daily.rewards.app.feature.login.view.viewholder.EnviromentCustomViewHolder
+import br.com.aleson.daily.rewards.app.feature.login.view.viewholder.EnviromentItemViewHolder
 import br.com.aleson.daily.rewards.app.feature.login.view.viewholder.EnviromentsViewHolder
 import br.com.aleson.daily.rewards.app.feature.login.view.viewstate.LoginViewEvent
 import br.com.aleson.daily.rewards.app.feature.login.view.viewstate.LoginViewState
@@ -41,27 +43,36 @@ class LoginFormFragment : BaseFragment() {
 
     private var enviromentsBottomSheet: BaseBottomSheetDialog<EnviromentsViewHolder>? = null
 
-    private var enviromentClickListener = object : BaseRecyclerListener<Enviroment> {
+    private var enviromentClickListener = object : BaseRecyclerListener<BaseAdapterItem<Enviroment>> {
 
-        override fun onClickListener(data: Enviroment, v: View) {
-            BaseProvider.setServerUrl(data.url)
+        override fun onClickListener(data: BaseAdapterItem<Enviroment>, v: View) {
+            BaseProvider.setServerUrl(data.item?.url.toString())
             varifyLogin()
             enviromentsBottomSheet?.dismiss()
         }
     }
 
-    private var enviromentAdapter = object : BaseRecyclerViewAdapter<Enviroment>(enviromentClickListener) {
+    private var enviromentAdapter =
+        object : BaseRecyclerViewAdapter<BaseAdapterItem<Enviroment>>(enviromentClickListener) {
+
+            override fun getLayoutId(position: Int, obj: BaseAdapterItem<Enviroment>): Int {
+                if (obj.option.isEmpty()) {
+                    return R.layout.enviroment_item_holder
+                }
+                return R.layout.enviroment_item_custom_holder
+
+            }
 
         override fun getViewHolder(
             view: View,
             viewType: Int
         ): RecyclerView.ViewHolder {
-            return EnviromentViewHolder(view)
+            if (R.layout.enviroment_item_custom_holder == viewType) {
+                return EnviromentCustomViewHolder(view)
+            }
+            return EnviromentItemViewHolder(view)
         }
 
-        override fun getLayoutId(position: Int, obj: Enviroment): Int {
-            return R.layout.enviroment_item_holder
-        }
     }
 
     private val enviromentViewHolder =
@@ -108,7 +119,13 @@ class LoginFormFragment : BaseFragment() {
             .viewHolder(enviromentViewHolder)
             ?.build()
 
-        this.getEnviroments()
+        var dev = true
+        if (dev) {
+            this.getEnviroments()
+        } else {
+            varifyLogin()
+        }
+
     }
 
     private fun showEnviromentChooser() {
@@ -147,7 +164,10 @@ class LoginFormFragment : BaseFragment() {
     }
 
     private fun loadEnviroments(enviroments: List<Enviroment>?) {
-        enviroments?.let { enviromentAdapter.add(it) }
+        enviroments?.forEach {
+            enviromentAdapter.add(BaseAdapterItem(it))
+        }
+        enviromentAdapter.add(BaseAdapterItem(option = "Custom"))
         this.showEnviromentChooser()
     }
 

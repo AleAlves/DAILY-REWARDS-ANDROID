@@ -1,11 +1,13 @@
 package br.com.aleson.daily.rewards.app.feature.login.view.viewstate
 
+import java.util.*
+
 
 sealed class LoginViewState {
 
-    data class OnError(val error: Exception) : LoginViewState()
+    class OnError(val error: Exception) : LoginViewState()
 
-    data class ShowLoading(val dissmisable: Boolean) : LoginViewState()
+    object ShowLoading : LoginViewState()
 
-    data class HideLoading(val dissmisable: Boolean) : LoginViewState()
+    object HideLoading : LoginViewState()
 }

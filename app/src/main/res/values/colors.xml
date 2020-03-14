@@ -4,7 +4,8 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="cardDolor">#F8F8F8</color>
-    <color name="color1">#F44336</color>
+    <color name="progress_background_transparent">#00FFFFFF</color>
+    <color name="color1">#FFEB3B</color>
     <color name="color2">#FFEB3B</color>
     <color name="color3">#4CAF50</color>
     <color name="color4">#673AB7</color>

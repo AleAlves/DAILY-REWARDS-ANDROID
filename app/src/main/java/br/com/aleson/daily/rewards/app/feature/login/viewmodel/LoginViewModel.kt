@@ -28,13 +28,13 @@ class LoginViewModel(
     }
 
     override fun onError() {
-        this.state.value = LoginViewState.ShowLoading(false)
+        this.state.value = LoginViewState.HideLoading
         this.state.value = LoginViewState.OnError(Exception("Error"))
     }
 
     fun loadPublicKey(uid: String) {
 
-        this.state.value = LoginViewState.ShowLoading(true)
+        this.state.value = LoginViewState.ShowLoading
 
         getPublicKeyCase.execute(
 
@@ -65,7 +65,6 @@ class LoginViewModel(
 
             onResponse = { response ->
                 login(response?.accessToken?.value)
-                this.state.value = LoginViewState.ShowLoading(true)
             },
 
             onError = { onError() }
@@ -79,7 +78,7 @@ class LoginViewModel(
         callLoginUseCase.execute(
 
             onResponse = {
-                this.state.value = LoginViewState.HideLoading(true)
+                this.state.value = LoginViewState.HideLoading
                 this.event.value = LoginViewEvent.OnReceiveSessionToken(it?.sessionToken)
             },
 
