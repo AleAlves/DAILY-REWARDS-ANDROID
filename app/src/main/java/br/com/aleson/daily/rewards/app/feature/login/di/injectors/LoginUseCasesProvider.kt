@@ -3,6 +3,7 @@ package br.com.aleson.daily.rewards.app.feature.login.di.injectors
 import br.com.aleson.daily.rewards.app.feature.login.repository.LoginRepository
 import br.com.aleson.daily.rewards.app.feature.login.usecase.GetAccessTokenUseCase
 import br.com.aleson.daily.rewards.app.feature.login.usecase.CallLoginUseCase
+import br.com.aleson.daily.rewards.app.feature.login.usecase.EnviromentUseCase
 import br.com.aleson.daily.rewards.app.feature.login.usecase.GetPublicKeyUseCase
 
 class LoginUseCasesProvider {
@@ -19,6 +20,10 @@ class LoginUseCasesProvider {
 
         fun provideLoginUseCase(loginRepository: LoginRepository): CallLoginUseCase {
             return CallLoginUseCase(loginRepository)
+        }
+
+        fun provideEnviromentUseCase(loginRepository: LoginRepository): EnviromentUseCase {
+            return EnviromentUseCase(loginRepository)
         }
     }
 }

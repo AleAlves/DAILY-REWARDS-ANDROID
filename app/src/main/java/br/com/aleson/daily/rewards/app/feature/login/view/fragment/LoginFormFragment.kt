@@ -4,21 +4,27 @@ package br.com.aleson.daily.rewards.app.feature.login.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import br.com.aleson.daily.rewards.app.R
 import br.com.aleson.daily.rewards.app.core.base.BaseFragment
+import br.com.aleson.daily.rewards.app.core.di.BaseProvider
 import br.com.aleson.daily.rewards.app.core.firebase.FirebaseAuthHelper
 import br.com.aleson.daily.rewards.app.core.firebase.RC_SIGN_IN
+import br.com.aleson.daily.rewards.app.core.model.Enviroment
 import br.com.aleson.daily.rewards.app.core.ui.BaseBottomSheetDialog
+import br.com.aleson.daily.rewards.app.core.ui.BaseRecyclerListener
+import br.com.aleson.daily.rewards.app.core.ui.BaseRecyclerViewAdapter
 import br.com.aleson.daily.rewards.app.feature.home.view.HomeActivity
 import br.com.aleson.daily.rewards.app.feature.login.di.LoginInjector
 import br.com.aleson.daily.rewards.app.feature.login.view.viewholder.EnviromentViewHolder
+import br.com.aleson.daily.rewards.app.feature.login.view.viewholder.EnviromentsViewHolder
 import br.com.aleson.daily.rewards.app.feature.login.view.viewstate.LoginViewEvent
 import br.com.aleson.daily.rewards.app.feature.login.view.viewstate.LoginViewState
 import br.com.aleson.daily.rewards.app.feature.login.viewmodel.LoginViewModel
@@ -31,20 +37,50 @@ class LoginFormFragment : BaseFragment() {
     private lateinit var viewModel: LoginViewModel
     private lateinit var textiviewVersion: TextView
     private lateinit var firebaseAuthHelper: FirebaseAuthHelper
+    private lateinit var enviromentRecylerView: RecyclerView
 
-    private var enviromentBottomSheet: BaseBottomSheetDialog<EnviromentViewHolder>? = null
+    private var enviromentsBottomSheet: BaseBottomSheetDialog<EnviromentsViewHolder>? = null
+
+    private var enviromentClickListener = object : BaseRecyclerListener<Enviroment> {
+
+        override fun onClickListener(data: Enviroment, v: View) {
+            BaseProvider.setServerUrl(data.url)
+            varifyLogin()
+            enviromentsBottomSheet?.dismiss()
+        }
+    }
+
+    private var enviromentAdapter = object : BaseRecyclerViewAdapter<Enviroment>(enviromentClickListener) {
+
+        override fun getViewHolder(
+            view: View,
+            viewType: Int
+        ): RecyclerView.ViewHolder {
+            return EnviromentViewHolder(view)
+        }
+
+        override fun getLayoutId(position: Int, obj: Enviroment): Int {
+            return R.layout.enviroment_item_holder
+        }
+    }
 
     private val enviromentViewHolder =
-        object : BaseBottomSheetDialog.DialogFragmentCallBack<EnviromentViewHolder> {
-            override fun setViewHolder(): EnviromentViewHolder {
-                val itemView = View.inflate(context, R.layout.enviroment_holder, null)
-                return EnviromentViewHolder(itemView)
+        object : BaseBottomSheetDialog.ViewHolder<EnviromentsViewHolder> {
+
+            override fun holderLayout(): Int {
+                return R.layout.enviroments_holder
             }
 
-            override fun onBindData(holder: EnviromentViewHolder) {
-                Log.d("", "")
+            override fun setViewHolder(): EnviromentsViewHolder? {
+                val itemView = View.inflate(context, holderLayout(), null)
+                return itemView?.let { EnviromentsViewHolder(it) }
             }
 
+            override fun onBindData(holder: EnviromentsViewHolder) {
+                enviromentRecylerView = holder.itemView.findViewById(R.id.enviroments_recyclerview) as RecyclerView
+                enviromentRecylerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                enviromentRecylerView.adapter = enviromentAdapter
+            }
         }
 
     override fun onCreateView(
@@ -58,11 +94,7 @@ class LoginFormFragment : BaseFragment() {
 
         this.textiviewVersion = view.findViewById(R.id.textview_version)
 
-        view.findViewById<SignInButton>(R.id.login_frag_button_signin).setOnClickListener {
-            signIn()
-        }
-
-        super.showLoading()
+        view.findViewById<SignInButton>(R.id.login_frag_button_signin).setOnClickListener { signIn() }
     }
 
     override fun setupView() {
@@ -70,22 +102,23 @@ class LoginFormFragment : BaseFragment() {
 
         this.firebaseAuthHelper.iniGoogleSignInClient(context)
 
-        this.enviromentBottomSheet =
-            BaseBottomSheetDialog.Builder<EnviromentViewHolder>()
-                .fullScreen(false)
-                .touchOutside(true)
-                .viewHolder(enviromentViewHolder)
-                ?.build()
+        this.enviromentsBottomSheet = BaseBottomSheetDialog.Builder<EnviromentsViewHolder>()
+            .fullScreen(false)
+            .touchOutside(false)
+            .viewHolder(enviromentViewHolder)
+            ?.build()
 
-        this.fragmentManager?.let { this.enviromentBottomSheet?.show(it, this.tag) }
+        this.getEnviroments()
+    }
 
-        this.varifyLogin()
+    private fun showEnviromentChooser() {
+        this.fragmentManager?.let { this.enviromentsBottomSheet?.show(it, this.tag) }
     }
 
     override fun setupViewModel() {
 
         this.viewModel = ViewModelProviders.of(this, activity?.baseContext?.let {
-            LoginInjector.provideLoginViewModelFactory()
+            context?.let { it1 -> LoginInjector.provideLoginViewModelFactory(it1) }
         }).get(LoginViewModel::class.java)
 
         this.viewModel.setup()
@@ -108,26 +141,34 @@ class LoginFormFragment : BaseFragment() {
         this.viewModel.viewEvent.observe(this, Observer {
             when (it) {
                 is LoginViewEvent.OnReceiveSessionToken -> navigateHome()
+                is LoginViewEvent.OnLoadEnviroments -> loadEnviroments(it.enviroments)
             }
         })
     }
 
-    override fun getFragmentTag(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    private fun loadEnviroments(enviroments: List<Enviroment>?) {
+        enviroments?.let { enviromentAdapter.add(it) }
+        this.showEnviromentChooser()
     }
 
-    override fun onBackPressed() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun getFragmentTag(): String {
+        return this.tag.toString()
     }
+
+    override fun onBackPressed() {}
 
     override fun getFragmentLayout(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return R.layout.fragment_login_form
+    }
+
+    private fun getEnviroments() {
+        viewModel.getEnviroments()
     }
 
     private fun varifyLogin() {
         if (this.firebaseAuthHelper.isLoggedIn()) {
             this.viewModel.user?.value = firebaseAuthHelper.user()
-            viewModel.loadPublicKey(this.firebaseAuthHelper.auth()?.uid!!)
+            viewModel.loadPublicKey(this.firebaseAuthHelper.auth()?.uid.toString())
         }
     }
 

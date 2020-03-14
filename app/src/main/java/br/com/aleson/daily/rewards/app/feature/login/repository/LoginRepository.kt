@@ -4,15 +4,18 @@ import br.com.aleson.core.tools.coretools.CoreToolsBuilder
 import br.com.aleson.core.tools.coretools.cryptography.model.PublicKey
 import br.com.aleson.core.tools.coretools.retrofit.domain.HTTPRequest
 import br.com.aleson.core.tools.coretools.retrofit.domain.HTTPResponse
+import br.com.aleson.daily.rewards.app.core.data.BaseLocalDataSource
 import br.com.aleson.daily.rewards.app.core.repository.BaseRepository
 import br.com.aleson.daily.rewards.app.core.session.Session
 import br.com.aleson.daily.rewards.app.feature.login.model.AccessToken
 import br.com.aleson.daily.rewards.app.feature.login.model.SessionToken
 import br.com.aleson.daily.rewards.app.feature.login.model.User
 import br.com.aleson.daily.rewards.app.feature.login.model.UserKeyChain
+import br.com.aleson.daily.rewards.app.feature.login.repository.data.LoginLocalDataSource
 import br.com.aleson.daily.rewards.app.feature.login.repository.data.LoginRemoteDataSource
 import br.com.aleson.daily.rewards.app.feature.login.repository.service.LoginServices
 import br.com.aleson.daily.rewards.app.feature.login.usecase.CallLoginResponse
+import br.com.aleson.daily.rewards.app.feature.login.usecase.EnviromentUseCaseResponse
 import br.com.aleson.daily.rewards.app.feature.login.usecase.GetAccessTokenResponse
 import br.com.aleson.daily.rewards.app.feature.login.usecase.GetPublicKeyResponse
 import retrofit2.Call
@@ -21,8 +24,9 @@ import retrofit2.Response
 
 class LoginRepository(
     private val loginServices: LoginServices?,
+    private val enviroments: BaseLocalDataSource,
     private val core: CoreToolsBuilder
-) : BaseRepository(), LoginRemoteDataSource {
+) : BaseRepository(), LoginRemoteDataSource, LoginLocalDataSource {
 
     override fun requestPublicKeyCallback(onResponse: (GetPublicKeyResponse?) -> Unit, onError: () -> Unit) {
 
@@ -105,5 +109,9 @@ class LoginRepository(
         val httpRequest = HTTPRequest(core.crypto.AES().encrypt(user))
 
         loginServices?.login(accessToken, httpRequest)?.enqueue(callback)
+    }
+
+    override fun getEnviroments(): EnviromentUseCaseResponse {
+        return enviroments.getEnviroments()
     }
 }

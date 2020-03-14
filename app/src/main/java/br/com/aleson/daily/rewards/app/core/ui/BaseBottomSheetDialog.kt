@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import br.com.aleson.daily.rewards.app.core.exception.BuildImplementationException
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -18,12 +17,15 @@ class BaseBottomSheetDialog<T> : BottomSheetDialogFragment() {
     private var dialog: BottomSheetDialog? = null
     private var hasFullScreen = false
 
-    private lateinit var callBack: DialogFragmentCallBack<T>
-    private lateinit var holder: RecyclerView.ViewHolder
+    private lateinit var viewHoder: ViewHolder<T>
+
+    lateinit var holder: RecyclerView.ViewHolder
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
         dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+
+        viewHoder.onBindData(holder as T)
 
         val view = holder.itemView as ConstraintLayout
 
@@ -35,8 +37,7 @@ class BaseBottomSheetDialog<T> : BottomSheetDialogFragment() {
             view.layoutParams = params
         }
         dialog?.setContentView(view)
-        mBehavior =
-            BottomSheetBehavior.from(view.parent as View)
+        mBehavior = BottomSheetBehavior.from(view.parent as View)
         mBehavior?.isHideable = false
         return dialog as BottomSheetDialog
     }
@@ -59,23 +60,24 @@ class BaseBottomSheetDialog<T> : BottomSheetDialogFragment() {
             return this
         }
 
-        fun viewHolder(callBack: DialogFragmentCallBack<T>): Builder<T>? {
+        fun viewHolder(callBack: ViewHolder<T>): Builder<T>? {
             bottomDialogFragment.holder = callBack.setViewHolder() as RecyclerView.ViewHolder
-            bottomDialogFragment.callBack = callBack
+            bottomDialogFragment.viewHoder = callBack
             return this
         }
 
         fun build(): BaseBottomSheetDialog<T> {
-            if (bottomDialogFragment.holder == null) {
-                throw BuildImplementationException("Holder instance needed")
-            }
             return bottomDialogFragment
         }
 
     }
 
-    interface DialogFragmentCallBack<T> {
-        fun setViewHolder(): T
+    interface ViewHolder<T> {
+
+        fun holderLayout(): Int
+
+        fun setViewHolder(): T?
+
         fun onBindData(holder: T)
     }
 

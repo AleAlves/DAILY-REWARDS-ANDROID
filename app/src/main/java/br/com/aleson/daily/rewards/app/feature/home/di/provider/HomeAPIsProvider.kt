@@ -1,18 +1,16 @@
 package br.com.aleson.daily.rewards.app.feature.home.di.provider
 
 import br.com.aleson.daily.rewards.app.core.api.APIServiceClient
-import br.com.aleson.daily.rewards.app.core.di.BaseProvider
-import br.com.aleson.daily.rewards.app.core.di.SERVER_URL
 import br.com.aleson.daily.rewards.app.feature.home.repository.service.HomeServices
 
-class HomeAPIsProvider : BaseProvider() {
+class HomeAPIsProvider {
 
     companion object {
 
-        fun services(): HomeServices? {
+        fun services(server: String): HomeServices? {
 
             return APIServiceClient.createService(
-                SERVER_URL,
+                server,
                 HomeServices::class.java
             )
         }

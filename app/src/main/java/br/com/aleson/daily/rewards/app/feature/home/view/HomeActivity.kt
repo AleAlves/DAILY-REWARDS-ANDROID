@@ -14,6 +14,6 @@ class HomeActivity : AppCompatActivity(), BaseRecyclerListener<User> {
         setContentView(R.layout.activity_home)
     }
 
-    override fun onClickListener(data: User, v: View, code: Int) {
+    override fun onClickListener(data: User, v: View) {
     }
 }

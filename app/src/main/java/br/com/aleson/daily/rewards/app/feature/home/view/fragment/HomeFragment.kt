@@ -37,14 +37,14 @@ class HomeFragment : BaseFragment() {
 
     private var tasksClickListener = object : BaseRecyclerListener<Tasks> {
 
-        override fun onClickListener(data: Tasks, v: View, code: Int) {
+        override fun onClickListener(data: Tasks, v: View) {
 
         }
     }
 
     private var groupClickListener = object : BaseRecyclerListener<Group> {
 
-        override fun onClickListener(data: Group, v: View, code: Int) {
+        override fun onClickListener(data: Group, v: View) {
 
         }
     }
@@ -101,8 +101,7 @@ class HomeFragment : BaseFragment() {
         tasksRecylerView.layoutManager = layoutMutableList
 
         tasksRecylerView.adapter = tasksAdapter
-        gropuRecylerView.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        gropuRecylerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         gropuRecylerView.adapter = gorupsAdapter
 
         viewPager.setPageTransformer(context?.let { ViewPagerStack(it) })

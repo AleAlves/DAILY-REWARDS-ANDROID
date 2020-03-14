@@ -5,9 +5,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-const val SERVER_URL = "http://192.168.0.11:8084/"
-
-
 object APIServiceClient {
 
     fun <S> createService(baseURL: String, serviceClass: Class<S>): S? {

@@ -1,5 +1,5 @@
 package br.com.aleson.daily.rewards.app.feature.login.repository.data
 
-interface LoginLocalDataSource {
+import br.com.aleson.daily.rewards.app.core.data.BaseLocalDataSource
 
-}
+interface LoginLocalDataSource  : BaseLocalDataSource

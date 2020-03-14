@@ -97,7 +97,7 @@ interface BaseRecyclerListener<T> {
      * @param v : View clicked
      * @param code : Code asigned to view
      */
-    fun onClickListener(data: T, v: View, code: Int)
+    fun onClickListener(data: T, v: View)
 }
 
 interface GenericBinder<T> {

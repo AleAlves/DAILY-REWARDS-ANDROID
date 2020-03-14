@@ -1,11 +1,14 @@
 package br.com.aleson.daily.rewards.app.core.base
 
+import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 
 abstract class BaseFragment : BaseDialogFragment() {
+
+    private lateinit var dialog : Dialog
 
     abstract fun onBindView(view: View)
 
@@ -37,12 +40,12 @@ abstract class BaseFragment : BaseDialogFragment() {
     }
 
     fun showLoading() {
-        val dialog = super.loading(context!!)
-        dialog?.show()
+        dialog = super.loading(context as Context) as Dialog
+        dialog.show()
     }
 
     fun hideLoading() {
-
+        dialog.dismiss()
     }
 
 }

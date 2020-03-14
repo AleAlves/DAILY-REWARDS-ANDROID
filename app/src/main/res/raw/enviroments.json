@@ -1,0 +1,19 @@
+{
+  "enviroments": [
+    {
+      "name": "Localhost",
+      "url": "http://192.168.0.11:8084/",
+      "description": "Local machine api"
+    },
+    {
+      "name": "Heroku-dev",
+      "url": "https://daily-rewards-node-api-dev.herokuapp.com/",
+      "description": "Clound development api"
+    },
+    {
+      "name": "Heroku-prod",
+      "url": "https://base-node-typescript-api.herokuapp.com/",
+      "description": "Production api"
+    }
+  ]
+}

@@ -12,7 +12,8 @@ import com.google.firebase.auth.FirebaseUser
 class LoginViewModel(
     private val getPublicKeyCase: GetPublicKeyUseCase,
     private val getAccessTokenUseCase: GetAccessTokenUseCase,
-    private val callLoginUseCase: CallLoginUseCase
+    private val callLoginUseCase: CallLoginUseCase,
+    private val enviromentUseCase: EnviromentUseCase
 ) : BaseViewModel() {
 
     var user: MutableLiveData<FirebaseUser>? = MutableLiveData()
@@ -33,7 +34,7 @@ class LoginViewModel(
 
     fun loadPublicKey(uid: String) {
 
-        this.state.value = LoginViewState.ShowLoading(false)
+        this.state.value = LoginViewState.ShowLoading(true)
 
         getPublicKeyCase.execute(
 
@@ -47,6 +48,13 @@ class LoginViewModel(
 
             onError = { onError() }
         )
+    }
+
+    fun getEnviroments() {
+
+        enviromentUseCase.execute(
+            onResponse = { this.event.value = LoginViewEvent.OnLoadEnviroments(it?.enviroments) },
+            onError = { onError() })
     }
 
     private fun getAccessToken(uid: String, publicKey: PublicKey) {
@@ -71,8 +79,8 @@ class LoginViewModel(
         callLoginUseCase.execute(
 
             onResponse = {
-                this.event.value = LoginViewEvent.OnReceiveSessionToken(it?.sessionToken)
                 this.state.value = LoginViewState.HideLoading(true)
+                this.event.value = LoginViewEvent.OnReceiveSessionToken(it?.sessionToken)
             },
 
             onError = { onError() }
