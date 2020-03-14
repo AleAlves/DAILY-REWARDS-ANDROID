@@ -6,7 +6,7 @@ open abstract class BaseProvider {
 
     companion object {
 
-        private var serverUrl = "http://192.168.0.11:8084/"
+        private var serverUrl = "https://base-node-typescript-api.herokuapp.com/"
 
         fun setServerUrl(url: String) {
             this.serverUrl = url
