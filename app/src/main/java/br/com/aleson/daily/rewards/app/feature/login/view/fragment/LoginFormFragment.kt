@@ -10,12 +10,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import br.com.aleson.daily.rewards.app.R
+import br.com.aleson.daily.rewards.app.core.DailyRewardsApplication
 import br.com.aleson.daily.rewards.app.core.base.BaseAdapterItem
 import br.com.aleson.daily.rewards.app.core.base.BaseFragment
-import br.com.aleson.daily.rewards.app.core.di.BaseProvider
 import br.com.aleson.daily.rewards.app.core.firebase.FirebaseAuthHelper
 import br.com.aleson.daily.rewards.app.core.firebase.RC_SIGN_IN
 import br.com.aleson.daily.rewards.app.core.model.Enviroment
@@ -33,8 +34,11 @@ import br.com.aleson.daily.rewards.app.feature.login.viewmodel.LoginViewModel
 import com.google.android.gms.common.SignInButton
 import com.google.firebase.auth.FirebaseUser
 
+const val ENV_ARG = "enviroment_choosen"
 
 class LoginFormFragment : BaseFragment() {
+
+    private var enviromentChoosen = false
 
     private lateinit var viewModel: LoginViewModel
     private lateinit var textiviewVersion: TextView
@@ -43,16 +47,17 @@ class LoginFormFragment : BaseFragment() {
 
     private var enviromentsBottomSheet: BaseBottomSheetDialog<EnviromentsViewHolder>? = null
 
-    private var enviromentClickListener = object : BaseRecyclerListener<BaseAdapterItem<Enviroment>> {
+    private var enviromentClickListener: BaseRecyclerListener<BaseAdapterItem<Enviroment>> =
+        object : BaseRecyclerListener<BaseAdapterItem<Enviroment>> {
 
         override fun onClickListener(data: BaseAdapterItem<Enviroment>, v: View) {
-            BaseProvider.setServerUrl(data.item?.url.toString())
-            varifyLogin()
+            DailyRewardsApplication.serverUrl = data.item?.url.toString()
             enviromentsBottomSheet?.dismiss()
+            reload()
         }
     }
 
-    private var enviromentAdapter =
+    private var enviromentAdapter: BaseRecyclerViewAdapter<BaseAdapterItem<Enviroment>> =
         object : BaseRecyclerViewAdapter<BaseAdapterItem<Enviroment>>(enviromentClickListener) {
 
             override fun getLayoutId(position: Int, obj: BaseAdapterItem<Enviroment>): Int {
@@ -60,7 +65,6 @@ class LoginFormFragment : BaseFragment() {
                     return R.layout.enviroment_item_holder
                 }
                 return R.layout.enviroment_item_custom_holder
-
             }
 
         override fun getViewHolder(
@@ -94,6 +98,13 @@ class LoginFormFragment : BaseFragment() {
             }
         }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.getBoolean(ENV_ARG)?.let {
+            enviromentChoosen = it
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -119,8 +130,8 @@ class LoginFormFragment : BaseFragment() {
             .viewHolder(enviromentViewHolder)
             ?.build()
 
-        var dev = true
-        if (dev) {
+        val dev = true
+        if (dev && !enviromentChoosen) {
             this.getEnviroments()
         } else {
             varifyLogin()
@@ -135,7 +146,7 @@ class LoginFormFragment : BaseFragment() {
     override fun setupViewModel() {
 
         this.viewModel = ViewModelProviders.of(this, activity?.baseContext?.let {
-            context?.let { it1 -> LoginInjector.provideLoginViewModelFactory(it1) }
+            context?.let { context -> LoginInjector.provideLoginViewModelFactory(context) }
         }).get(LoginViewModel::class.java)
 
         this.viewModel.setup()
@@ -164,9 +175,7 @@ class LoginFormFragment : BaseFragment() {
     }
 
     private fun loadEnviroments(enviroments: List<Enviroment>?) {
-        enviroments?.forEach {
-            enviromentAdapter.add(BaseAdapterItem(it))
-        }
+        enviroments?.forEach { enviromentAdapter.add(BaseAdapterItem(it)) }
         enviromentAdapter.add(BaseAdapterItem(option = "Custom"))
         this.showEnviromentChooser()
     }
@@ -219,6 +228,12 @@ class LoginFormFragment : BaseFragment() {
 
     private fun navigateHome() {
         startActivity(Intent(activity, HomeActivity::class.java))
+    }
+
+    private fun reload() {
+        val args = Bundle()
+        args.putBoolean(ENV_ARG, true)
+        findNavController().navigate(R.id.action_home_dest_self, args)
     }
 
 }

@@ -8,7 +8,14 @@
     <fragment
         android:id="@+id/home_dest"
         android:name="br.com.aleson.daily.rewards.app.feature.login.view.fragment.LoginFormFragment"
-        android:label="Home"/>
+        android:label="Home">
+        <action
+            android:id="@+id/action_home_dest_self"
+            app:destination="@id/home_dest" />
+        <argument
+            android:name="enviroment_choosen"
+            app:argType="boolean" />
+    </fragment>
 
 
 </navigation>

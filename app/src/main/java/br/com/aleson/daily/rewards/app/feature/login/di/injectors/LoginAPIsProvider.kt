@@ -7,9 +7,8 @@ class LoginAPIsProvider {
 
     companion object {
 
-        fun loginServices(server: String): LoginServices? {
+        fun loginServices(): LoginServices? {
             return APIServiceClient.createService(
-                server,
                 LoginServices::class.java
             )
         }

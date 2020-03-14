@@ -7,10 +7,9 @@ class HomeAPIsProvider {
 
     companion object {
 
-        fun services(server: String): HomeServices? {
+        fun services(): HomeServices? {
 
             return APIServiceClient.createService(
-                server,
                 HomeServices::class.java
             )
         }

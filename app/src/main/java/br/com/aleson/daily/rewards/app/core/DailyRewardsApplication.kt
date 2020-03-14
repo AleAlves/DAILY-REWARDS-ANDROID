@@ -4,6 +4,11 @@ import android.app.Application
 
 class DailyRewardsApplication : Application(){
 
+
+    companion object {
+        var serverUrl = "https://base-node-typescript-api.herokuapp.com/"
+    }
+
     override fun onCreate() {
         super.onCreate()
     }
