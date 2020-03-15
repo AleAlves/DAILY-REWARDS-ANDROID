@@ -14,10 +14,6 @@ class StackViewPager(context: Context, attrs: AttributeSet) : ViewPager2(context
     val SwipeDirection_LEFT = 2
     val SwipeDirection_ALL = 0
     val SwipeDirection_NONE = -1
-    val SCROLL_MODE_DEFAULT = 250
-    val SCROLL_MODE_MEDIUM = 750
-    val SCROLL_MODE_SLOW = 1000
-    val SCROLL_MODE_ULTRA_SLOW = 2000
 
     private var initialXValue = 0f
     private var direction = SwipeDirection_ALL

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.OverScroller
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -105,9 +106,11 @@ class HomeFragment : BaseFragment() {
         gropuRecylerView.adapter = gorupsAdapter
 
         viewPager.setPageTransformer(context?.let { ViewPagerStack(it) })
-        viewPager.overScrollMode = View.SCROLL_AXIS_VERTICAL
         viewPager.adapter = tasksAdapter
         viewPager.orientation = ViewPager2.ORIENTATION_VERTICAL
+        viewPager.overScrollMode = View.OVER_SCROLL_NEVER
+        viewPager.setPadding(1,0,1,0)
+        viewPager.clipToPadding = false
     }
 
     override fun setupViewModel() {

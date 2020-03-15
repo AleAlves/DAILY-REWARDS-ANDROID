@@ -13,4 +13,11 @@
         <item name="android:background">@color/cardColor</item>
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
     </style>
+
+    <style name="TasksCard">
+        <item name="android:background">@drawable/tasks_item_hold_background</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+    </style>
+
+
 </resources>
