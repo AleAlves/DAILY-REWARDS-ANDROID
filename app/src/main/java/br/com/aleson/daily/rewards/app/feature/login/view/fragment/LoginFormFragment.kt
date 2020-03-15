@@ -67,16 +67,12 @@ class LoginFormFragment : BaseFragment() {
                 return R.layout.enviroment_item_custom_holder
             }
 
-        override fun getViewHolder(
-            view: View,
-            viewType: Int
-        ): RecyclerView.ViewHolder {
-            if (R.layout.enviroment_item_custom_holder == viewType) {
-                return EnviromentCustomViewHolder(view)
+            override fun getViewHolder(view: View, viewType: Int): RecyclerView.ViewHolder {
+                if (R.layout.enviroment_item_custom_holder == viewType) {
+                    return EnviromentCustomViewHolder(view)
+                }
+                return EnviromentItemViewHolder(view)
             }
-            return EnviromentItemViewHolder(view)
-        }
-
     }
 
     private val enviromentViewHolder =
@@ -113,8 +109,6 @@ class LoginFormFragment : BaseFragment() {
     }
 
     override fun onBindView(view: View) {
-
-        this.textiviewVersion = view.findViewById(R.id.textview_version)
 
         view.findViewById<SignInButton>(R.id.login_frag_button_signin).setOnClickListener { signIn() }
     }

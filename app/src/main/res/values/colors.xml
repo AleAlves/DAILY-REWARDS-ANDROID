@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
-    <color name="cardDolor">#F8F8F8</color>
+    <color name="colorPrimary">#03A9F4</color>
+    <color name="colorBackground">#b3e5fc</color>
+    <color name="colorPrimaryDark">#82b3c9</color>
+    <color name="colorAccent">#e6ffff</color>
+    <color name="cardColor">#F8F8F8</color>
     <color name="progress_background_transparent">#00FFFFFF</color>
     <color name="color1">#FFEB3B</color>
     <color name="color2">#FFEB3B</color>
