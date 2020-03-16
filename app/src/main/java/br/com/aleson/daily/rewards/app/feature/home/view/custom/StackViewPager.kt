@@ -8,7 +8,7 @@ import androidx.viewpager2.widget.ViewPager2
 import br.com.aleson.daily.rewards.app.core.ui.StackScroller
 import java.lang.ref.WeakReference
 
-class StackViewPager(context: Context, attrs: AttributeSet) : ViewPager2(context, attrs) {
+class StackViewPager(context: Context, attrs: AttributeSet) : ViewPager(context, attrs) {
 
     val SwipeDirection_RIGHT = 1
     val SwipeDirection_LEFT = 2

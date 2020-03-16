@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_graph_home"
     app:startDestination="@+id/home_dest">
 
     <fragment
         android:id="@+id/home_dest"
         android:name="br.com.aleson.daily.rewards.app.feature.home.view.fragment.HomeFragment"
-        android:label="Home"/>
+        android:label="Home"
+        tools:layout="@layout/fragment_acitvities" />
 
 
 </navigation>

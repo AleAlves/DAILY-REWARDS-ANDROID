@@ -6,6 +6,9 @@
     <color name="colorAccent">#e6ffff</color>
     <color name="cardColor">#F8F8F8</color>
     <color name="progress_background_transparent">#00FFFFFF</color>
+    <color name="font_light_color">#F8F8F8</color>
+    <color name="font_dark_color">#131313</color>
+
     <color name="color1">#FFEB3B</color>
     <color name="color2">#FFEB3B</color>
     <color name="color3">#4CAF50</color>

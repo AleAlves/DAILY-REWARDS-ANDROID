@@ -1,82 +1,22 @@
 package br.com.aleson.daily.rewards.app.feature.home.view.fragment
 
-import android.content.Context
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.OverScroller
-import androidx.annotation.RequiresApi
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import br.com.aleson.daily.rewards.app.R
 import br.com.aleson.daily.rewards.app.core.base.BaseFragment
-import br.com.aleson.daily.rewards.app.core.ui.*
-import br.com.aleson.daily.rewards.app.feature.home.di.injector.HomeInjector
-import br.com.aleson.daily.rewards.app.feature.home.model.Group
-import br.com.aleson.daily.rewards.app.feature.home.model.Tasks
-import br.com.aleson.daily.rewards.app.feature.home.view.custom.StackViewPager
-import br.com.aleson.daily.rewards.app.feature.home.view.viewholder.GroupsViewHolder
-import br.com.aleson.daily.rewards.app.feature.home.view.viewholder.TasksViewHolder
-import br.com.aleson.daily.rewards.app.feature.home.viewmodel.HomeViewModel
+import br.com.aleson.daily.rewards.app.core.ui.ViewPagerFragmentAdapter
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 
 
 class HomeFragment : BaseFragment() {
 
-    private lateinit var viewModel: HomeViewModel
-    private var listener: OnFragmentInteractionListener? = null
-
-    private lateinit var tasksRecylerView: RecyclerView
-    private lateinit var gropuRecylerView: RecyclerView
-    private lateinit var viewPager: StackViewPager
-    private lateinit var stackPagerAdapter: StackPagerAdapter
-
-    private var tasksClickListener = object : BaseRecyclerListener<Tasks> {
-
-        override fun onClickListener(data: Tasks, v: View) {
-
-        }
-    }
-
-    private var groupClickListener = object : BaseRecyclerListener<Group> {
-
-        override fun onClickListener(data: Group, v: View) {
-
-        }
-    }
-
-    private var tasksAdapter = object : BaseRecyclerViewAdapter<Tasks>(tasksClickListener) {
-
-        override fun getViewHolder(
-            view: View,
-            viewType: Int
-        ): RecyclerView.ViewHolder {
-            return TasksViewHolder(view)
-        }
-
-        override fun getLayoutId(position: Int, obj: Tasks): Int {
-            return R.layout.tasks_holder
-        }
-    }
-
-    private var gorupsAdapter = object : BaseRecyclerViewAdapter<Group>(groupClickListener) {
-
-        override fun getViewHolder(
-            view: View,
-            viewType: Int
-        ): RecyclerView.ViewHolder {
-            return GroupsViewHolder(view)
-        }
-
-        override fun getLayoutId(position: Int, obj: Group): Int {
-            return R.layout.tasks_holder
-        }
-    }
+    var myViewPager2: ViewPager2? = null
+    var myAdapter: ViewPagerFragmentAdapter? = null
+    var tabLayout: TabLayout? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -84,42 +24,41 @@ class HomeFragment : BaseFragment() {
     ): View? {
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
-
-    fun onButtonPressed(uri: Uri) {
-        listener?.onFragmentInteraction(uri)
-    }
-
     override fun onBindView(view: View) {
-        tasksRecylerView = view.findViewById(R.id.recycler_view_tasks)
-        gropuRecylerView = view.findViewById(R.id.recycler_view_groups)
-        viewPager = view.findViewById(R.id.view_pager2)
+        tabLayout = view.findViewById(R.id.tab_layout)
+        myViewPager2 = view.findViewById(R.id.home_viewpager)
+        myAdapter = ViewPagerFragmentAdapter(this)
+
+        myAdapter?.add(ActivitiesFragment())
+        myAdapter?.add(ActivitiesFragment())
+        myAdapter?.add(ActivitiesFragment())
+
+        myViewPager2!!.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+
+        myViewPager2!!.adapter = myAdapter
+
+        TabLayoutMediator(tabLayout!!, myViewPager2!!,
+            TabLayoutMediator.OnConfigureTabCallback { tab, position ->
+                when (position) {
+                    0 -> {
+                        tab.text = "Todos"
+                    }
+                    1 -> {
+                        tab.text = "Pessoais"
+                    }
+                    2 -> {
+                        tab.text = "Grupos"
+                    }
+                }
+            }).attach()
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun setupView() {
-        val layoutMutableList = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        tasksRecylerView.addItemDecoration(OverLapDecoration())
-        tasksRecylerView.layoutManager = layoutMutableList
-
-        tasksRecylerView.adapter = tasksAdapter
-        gropuRecylerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        gropuRecylerView.adapter = gorupsAdapter
-
-        viewPager.setPageTransformer(context?.let { ViewPagerStack(it) })
-        viewPager.adapter = tasksAdapter
-        viewPager.orientation = ViewPager2.ORIENTATION_VERTICAL
-        viewPager.overScrollMode = View.OVER_SCROLL_NEVER
-        viewPager.setPadding(1,0,1,0)
-        viewPager.clipToPadding = false
     }
+
 
     override fun setupViewModel() {
-        this.viewModel = ViewModelProviders.of(this, activity?.baseContext?.let {
-            HomeInjector.provideHomeViewModelFactory()
-        }).get(HomeViewModel::class.java)
 
-        viewModel.getTasks()
-        viewModel.getGroups()
     }
 
     override fun getFragmentTag(): String {
@@ -134,34 +73,10 @@ class HomeFragment : BaseFragment() {
 
     override fun oberserverEvent() {
 
-        viewModel.taskslist?.observe(this, Observer {
-            tasksAdapter.add(it)
-            viewPager.setCurrentItem(it.size -1 , true)
-        })
-
-        viewModel.groupslist?.observe(this, Observer {
-            gorupsAdapter.add(it)
-        })
     }
 
     override fun getFragmentLayout(): Int {
         return R.layout.fragment_home
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is OnFragmentInteractionListener) {
-            listener = context
-        }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        listener = null
-    }
-
-
-    interface OnFragmentInteractionListener {
-        fun onFragmentInteraction(uri: Uri)
-    }
 }

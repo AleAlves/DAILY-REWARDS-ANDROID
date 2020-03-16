@@ -2,48 +2,37 @@ package br.com.aleson.daily.rewards.app.core.ui
 
 import android.content.Context
 import android.view.View
+import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
+import kotlin.math.abs
 
 
 class ViewPagerStack(var context: Context) : ViewPager2.PageTransformer {
 
-    override fun transformPage(view: View, position: Float) {
-        val pageWidth = view.width
-        val pageHeight = view.height
+    private val MIN_SCALE = 0.9f
 
-        when {
-            position <= -1f -> {
-                view.alpha = 0f
-            }
-            position > -1f  -> {
-                view.alpha = 1f - position
-            }
-            position < 1f  -> {
-                view.alpha = 1f - position
-            }
-            position <= 1 -> {
-                view.alpha = 0f
-            }
-        }
+    override fun transformPage(page: View, position: Float) {
 
-        if (-1 < position && position < 0) {
-            val scaleFactor = 1 - Math.abs(position) * 0.1f
-            val verticalMargin = pageHeight * (1 - scaleFactor) / 2
-            val horizontalMargin = pageWidth * (1 - scaleFactor) / 2
-            if (position < 0) {
-                view.translationX = horizontalMargin - verticalMargin / 2
+        page.apply {
+            if (position >= 0) {
+                page.scaleX = 0.9f - 0.02f * position
+                page.scaleY = 0.9f
+                page.translationX = -page.width * position
+                page.translationY = -10 * position
             } else {
-                view.translationX = -horizontalMargin + verticalMargin / 2
+                page.scaleX = 0.9f + 0.02f * position
+                page.scaleY = 0.9f
+                page.translationX = page.width * position
+                page.translationY = 10 * position
             }
-            view.scaleX = scaleFactor
-            view.scaleY = scaleFactor
+        }
+        when {
+            position < -1 -> page.alpha = 0.1f
+            position <= 1 -> {
+                page.alpha = 0.2f.coerceAtLeast(1 - abs(position))
+            }
+            else -> page.alpha = 0.8f
         }
 
-        view.translationX = view.width * -position
-
-        if (position > 0) {
-            val yPosition = position * view.height
-            view.translationY = yPosition
-        }
     }
 }

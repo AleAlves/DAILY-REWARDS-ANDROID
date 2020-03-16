@@ -11,8 +11,7 @@ import br.com.aleson.daily.rewards.app.R
 import br.com.aleson.daily.rewards.app.feature.home.model.Tasks
 
 
-class StackPagerAdapter(private val context: Context, private var tasks: List<Tasks>) :
-    PagerAdapter() {
+class StackPagerAdapter(private val context: Context, private var tasks: List<Tasks>) : PagerAdapter() {
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
