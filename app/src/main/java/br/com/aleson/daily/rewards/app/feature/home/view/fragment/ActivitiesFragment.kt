@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import br.com.aleson.daily.rewards.app.R
+import br.com.aleson.daily.rewards.app.core.base.BaseAdapterItem
 import br.com.aleson.daily.rewards.app.core.base.BaseFragment
 import br.com.aleson.daily.rewards.app.core.ui.*
 import br.com.aleson.daily.rewards.app.feature.home.di.injector.HomeInjector
@@ -21,6 +22,7 @@ import br.com.aleson.daily.rewards.app.feature.home.model.Group
 import br.com.aleson.daily.rewards.app.feature.home.model.Tasks
 import br.com.aleson.daily.rewards.app.feature.home.view.viewholder.GroupsViewHolder
 import br.com.aleson.daily.rewards.app.feature.home.view.viewholder.TasksViewHolder
+import br.com.aleson.daily.rewards.app.feature.home.view.viewholder.TasksViewOptionHolder
 import br.com.aleson.daily.rewards.app.feature.home.viewmodel.HomeViewModel
 
 
@@ -33,11 +35,11 @@ class ActivitiesFragment : BaseFragment() {
     private lateinit var gropuRecylerView: RecyclerView
     private lateinit var viewPager: ViewPager2
     private lateinit var stackPagerAdapter: StackPagerAdapter
+    private lateinit var viewPager2PageChangeCallback: ViewPager2PageChangeCallback
 
-    private var tasksClickListener = object : BaseRecyclerListener<Tasks> {
+    private var tasksClickListener = object : BaseRecyclerListener<BaseAdapterItem<Tasks>> {
 
-        override fun onClickListener(data: Tasks, v: View) {
-
+        override fun onClickListener(data: BaseAdapterItem<Tasks>, v: View) {
         }
     }
 
@@ -48,17 +50,24 @@ class ActivitiesFragment : BaseFragment() {
         }
     }
 
-    private var tasksAdapter = object : BaseRecyclerViewAdapter<Tasks>(tasksClickListener) {
+    private var tasksAdapter =
+        object : BaseRecyclerViewAdapter<BaseAdapterItem<Tasks>>(tasksClickListener) {
 
         override fun getViewHolder(
             view: View,
             viewType: Int
         ): RecyclerView.ViewHolder {
+            if (R.layout.tasks_add_item_holder == viewType) {
+                return TasksViewOptionHolder(view)
+            }
             return TasksViewHolder(view)
         }
 
-        override fun getLayoutId(position: Int, obj: Tasks): Int {
-            return R.layout.tasks_holder
+            override fun getLayoutId(position: Int, item: BaseAdapterItem<Tasks>): Int {
+                if (item.option.isEmpty()) {
+                    return R.layout.tasks_holder
+                }
+                return R.layout.tasks_add_item_holder
         }
     }
 
@@ -105,9 +114,12 @@ class ActivitiesFragment : BaseFragment() {
         gropuRecylerView.adapter = gorupsAdapter
 
         viewPager.setPageTransformer(context?.let { ViewPagerStack(it) })
-        viewPager.overScrollMode = View.OVER_SCROLL_NEVER
         viewPager.orientation = ViewPager2.ORIENTATION_VERTICAL
         viewPager.adapter = tasksAdapter
+
+        viewPager.apply {
+            (getChildAt(0) as RecyclerView).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+        }
     }
 
     override fun setupViewModel() {
@@ -131,8 +143,12 @@ class ActivitiesFragment : BaseFragment() {
 
     override fun oberserverEvent() {
 
-        viewModel.taskslist?.observe(this, Observer {
-            tasksAdapter.add(it)
+        viewModel.taskslist?.observe(this, Observer { tasks ->
+
+            tasks.forEach {
+                tasksAdapter.add(BaseAdapterItem(it))
+            }
+            tasksAdapter.add(BaseAdapterItem(option = "wow"))
         })
 
         viewModel.groupslist?.observe(this, Observer {
