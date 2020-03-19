@@ -22,7 +22,7 @@ import br.com.aleson.daily.rewards.app.feature.home.model.Group
 import br.com.aleson.daily.rewards.app.feature.home.model.Tasks
 import br.com.aleson.daily.rewards.app.feature.home.view.viewholder.GroupsViewHolder
 import br.com.aleson.daily.rewards.app.feature.home.view.viewholder.TasksViewHolder
-import br.com.aleson.daily.rewards.app.feature.home.view.viewholder.TasksViewOptionHolder
+import br.com.aleson.daily.rewards.app.feature.home.view.viewholder.TasksOptionViewHolder
 import br.com.aleson.daily.rewards.app.feature.home.viewmodel.HomeViewModel
 
 
@@ -34,8 +34,6 @@ class ActivitiesFragment : BaseFragment() {
     private lateinit var tasksRecylerView: RecyclerView
     private lateinit var gropuRecylerView: RecyclerView
     private lateinit var viewPager: ViewPager2
-    private lateinit var stackPagerAdapter: StackPagerAdapter
-    private lateinit var viewPager2PageChangeCallback: ViewPager2PageChangeCallback
 
     private var tasksClickListener = object : BaseRecyclerListener<BaseAdapterItem<Tasks>> {
 
@@ -58,7 +56,7 @@ class ActivitiesFragment : BaseFragment() {
             viewType: Int
         ): RecyclerView.ViewHolder {
             if (R.layout.tasks_add_item_holder == viewType) {
-                return TasksViewOptionHolder(view)
+                return TasksOptionViewHolder(view)
             }
             return TasksViewHolder(view)
         }

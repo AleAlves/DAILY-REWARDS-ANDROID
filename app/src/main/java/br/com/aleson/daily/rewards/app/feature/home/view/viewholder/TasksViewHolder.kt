@@ -23,7 +23,7 @@ class TasksViewHolder(view: View) : RecyclerView.ViewHolder(view),
     }
 }
 
-class TasksViewOptionHolder(view: View) : RecyclerView.ViewHolder(view),
+class TasksOptionViewHolder(view: View) : RecyclerView.ViewHolder(view),
     GenericBinder<BaseAdapterItem<Tasks>> {
 
     private val container: ConstraintLayout =
