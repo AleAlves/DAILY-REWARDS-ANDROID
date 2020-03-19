@@ -101,7 +101,8 @@ class LoginRepository(
                 call: Call<HTTPResponse<SessionToken>>,
                 response: Response<HTTPResponse<SessionToken>>
             ) {
-                Session.getInstance()?.setSessionToken(response.body()?.data as SessionToken)
+                Session.getInstance().setSessionToken(response.body()?.data as SessionToken)
+                Session.getInstance().user = user
                 onResponse(CallLoginResponse(getSessionToken()))
             }
         }

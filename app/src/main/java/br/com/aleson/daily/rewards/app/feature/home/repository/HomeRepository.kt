@@ -33,7 +33,7 @@ class HomeRepository(var homeServices: HomeServices?) : BaseRepository(),
             }
         }
 
-        var token = Session.getInstance()?.getSessionToken()
+        var token = Session.getInstance().getSessionToken()
 
         token?.sessionToken?.let { homeServices?.getTasks(it)?.enqueue(callback) }
     }

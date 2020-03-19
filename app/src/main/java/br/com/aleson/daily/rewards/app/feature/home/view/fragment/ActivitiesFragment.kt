@@ -90,10 +90,6 @@ class ActivitiesFragment : BaseFragment() {
         return inflater.inflate(R.layout.fragment_acitvities, container, false)
     }
 
-    fun onButtonPressed(uri: Uri) {
-        listener?.onFragmentInteraction(uri)
-    }
-
     override fun onBindView(view: View) {
         tasksRecylerView = view.findViewById(R.id.recycler_view_tasks)
         gropuRecylerView = view.findViewById(R.id.recycler_view_groups)

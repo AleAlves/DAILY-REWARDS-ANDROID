@@ -32,7 +32,7 @@ class CallLoginUseCase(private val loginRepository: LoginRepository) :
         return User(
             request.firebaseUser?.displayName,
             request.firebaseUser?.email,
-            request.firebaseUser?.toString(),
+            request.firebaseUser?.photoUrl.toString(),
             request.firebaseUser?.uid
         )
     }

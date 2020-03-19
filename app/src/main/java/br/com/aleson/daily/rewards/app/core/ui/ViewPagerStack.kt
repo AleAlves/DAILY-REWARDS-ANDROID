@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import android.view.View
 import androidx.viewpager2.widget.ViewPager2
-import kotlin.math.abs
 
 
 class ViewPagerStack(var context: Context) : ViewPager2.PageTransformer {

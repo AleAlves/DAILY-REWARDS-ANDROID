@@ -19,5 +19,11 @@
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
     </style>
 
+    <style name="RoundClickableItem">
+        <item name="android:background">@drawable/profile_holder_background</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+        <item name="android:clickable">false</item>
+    </style>
+
 
 </resources>

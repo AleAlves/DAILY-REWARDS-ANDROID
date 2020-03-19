@@ -4,19 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.viewpager2.widget.ViewPager2
 import br.com.aleson.daily.rewards.app.R
 import br.com.aleson.daily.rewards.app.core.base.BaseFragment
+import br.com.aleson.daily.rewards.app.core.session.Session
 import br.com.aleson.daily.rewards.app.core.ui.ViewPagerFragmentAdapter
+import br.com.aleson.daily.rewards.app.core.util.ImageUtil
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 
 class HomeFragment : BaseFragment() {
 
-    var myViewPager2: ViewPager2? = null
-    var myAdapter: ViewPagerFragmentAdapter? = null
-    var tabLayout: TabLayout? = null
+    private lateinit var myViewPager2: ViewPager2
+    lateinit var fragmentAdapter: ViewPagerFragmentAdapter
+    lateinit var tabLayout: TabLayout
+
+    private lateinit var profilePic: ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,17 +32,20 @@ class HomeFragment : BaseFragment() {
     override fun onBindView(view: View) {
         tabLayout = view.findViewById(R.id.tab_layout)
         myViewPager2 = view.findViewById(R.id.home_viewpager)
-        myAdapter = ViewPagerFragmentAdapter(this)
+        profilePic = view.findViewById(R.id.imageview_header_pic)
 
-        myAdapter?.add(ActivitiesFragment())
-        myAdapter?.add(ActivitiesFragment())
-        myAdapter?.add(ActivitiesFragment())
+        fragmentAdapter = ViewPagerFragmentAdapter(this)
 
-        myViewPager2!!.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+        fragmentAdapter.add(ActivitiesFragment())
+        fragmentAdapter.add(ActivitiesFragment())
+        fragmentAdapter.add(ActivitiesFragment())
 
-        myViewPager2!!.adapter = myAdapter
+        myViewPager2.orientation = ViewPager2.ORIENTATION_HORIZONTAL
 
-        TabLayoutMediator(tabLayout!!, myViewPager2!!,
+        myViewPager2.adapter = fragmentAdapter
+
+        TabLayoutMediator(
+            tabLayout, myViewPager2,
             TabLayoutMediator.OnConfigureTabCallback { tab, position ->
                 when (position) {
                     0 -> {
@@ -51,14 +59,18 @@ class HomeFragment : BaseFragment() {
                     }
                 }
             }).attach()
+
+        setupProfilePic()
     }
 
     override fun setupView() {
+        profilePic.setOnClickListener {
+            showToast(context, "wow")
+        }
     }
 
 
     override fun setupViewModel() {
-
     }
 
     override fun getFragmentTag(): String {
@@ -72,11 +84,14 @@ class HomeFragment : BaseFragment() {
     }
 
     override fun oberserverEvent() {
-
     }
 
     override fun getFragmentLayout(): Int {
         return R.layout.fragment_home
+    }
+
+    private fun setupProfilePic() {
+        ImageUtil.fetchRoundImage(context, Session.getInstance().user?.picture, profilePic)
     }
 
 }

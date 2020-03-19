@@ -32,7 +32,6 @@ import br.com.aleson.daily.rewards.app.feature.login.view.viewstate.LoginViewEve
 import br.com.aleson.daily.rewards.app.feature.login.view.viewstate.LoginViewState
 import br.com.aleson.daily.rewards.app.feature.login.viewmodel.LoginViewModel
 import com.google.android.gms.common.SignInButton
-import com.google.firebase.auth.FirebaseUser
 
 const val ENV_ARG = "enviroment_choosen"
 
@@ -190,7 +189,7 @@ class LoginFormFragment : BaseFragment() {
 
     private fun varifyLogin() {
         if (this.firebaseAuthHelper.isLoggedIn()) {
-            this.viewModel.user?.value = firebaseAuthHelper.user()
+            this.viewModel.user?.value = firebaseAuthHelper.auth()?.currentUser
             viewModel.loadPublicKey(this.firebaseAuthHelper.auth()?.uid.toString())
         }
     }
@@ -205,8 +204,8 @@ class LoginFormFragment : BaseFragment() {
             firebaseAuthHelper.authWithGoogle(
                 activity as Activity,
                 data,
-                onSuccess = { user ->
-                    login(user)
+                onSuccess = {
+                    login()
                 },
                 onFail = {
                     super.showToast(context, "falhou")
@@ -215,9 +214,9 @@ class LoginFormFragment : BaseFragment() {
         }
     }
 
-    private fun login(user: FirebaseUser?) {
-        this.viewModel.user?.value = firebaseAuthHelper.user()
-        user?.uid?.let { this.viewModel.loadPublicKey(it) }
+    private fun login() {
+        this.viewModel.user?.value = firebaseAuthHelper.auth()?.currentUser
+        this.viewModel.user?.value?.uid?.let { this.viewModel.loadPublicKey(it) }
     }
 
     private fun navigateHome() {
