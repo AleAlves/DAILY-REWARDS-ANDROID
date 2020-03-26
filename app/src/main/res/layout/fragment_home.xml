@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:text="Objetivos"
-        android:textColor="@color/font_light_color"
+        android:textColor="@color/font_dark_color"
         android:textSize="16sp"
         android:textStyle="bold"
         android:elevation="6dp"

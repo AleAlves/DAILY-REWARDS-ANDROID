@@ -10,7 +10,7 @@
 
 
     <style name="EnviromentCard">
-        <item name="android:background">@color/cardColor</item>
+        <item name="android:background">@color/envCardColor</item>
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
     </style>
 

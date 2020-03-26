@@ -14,25 +14,30 @@ class TasksViewHolder(view: View) : RecyclerView.ViewHolder(view),
     GenericBinder<BaseAdapterItem<Tasks>> {
 
     private val name: TextView = view.findViewById(R.id.name)
+    private val container: ConstraintLayout = view.findViewById(R.id.task_holder_containder)
 
     override fun bind(
         data: BaseAdapterItem<Tasks>,
         listener: BaseRecyclerListener<BaseAdapterItem<Tasks>>?
     ) {
         name.text = data.item?.title
+        container.setOnClickListener {
+            listener?.onClickListener(data, it)
+        }
     }
 }
 
 class TasksOptionViewHolder(view: View) : RecyclerView.ViewHolder(view),
     GenericBinder<BaseAdapterItem<Tasks>> {
 
-    private val container: ConstraintLayout =
-        view.findViewById(R.id.tasks_constraintlayout_container)
+    private val container: ConstraintLayout = view.findViewById(R.id.tasks_constraintlayout_container)
 
     override fun bind(
         data: BaseAdapterItem<Tasks>,
         listener: BaseRecyclerListener<BaseAdapterItem<Tasks>>?
     ) {
-        container.setOnClickListener { }
+        container.setOnClickListener {
+            listener?.onClickListener(data, it)
+        }
     }
 }

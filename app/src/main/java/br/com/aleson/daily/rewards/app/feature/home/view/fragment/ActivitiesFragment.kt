@@ -16,13 +16,17 @@ import androidx.viewpager2.widget.ViewPager2
 import br.com.aleson.daily.rewards.app.R
 import br.com.aleson.daily.rewards.app.core.base.BaseAdapterItem
 import br.com.aleson.daily.rewards.app.core.base.BaseFragment
-import br.com.aleson.daily.rewards.app.core.ui.*
+import br.com.aleson.daily.rewards.app.core.ui.BaseRecyclerListener
+import br.com.aleson.daily.rewards.app.core.ui.BaseRecyclerViewAdapter
+import br.com.aleson.daily.rewards.app.core.ui.OverLapDecoration
+import br.com.aleson.daily.rewards.app.core.ui.ViewPagerStack
 import br.com.aleson.daily.rewards.app.feature.home.di.injector.HomeInjector
 import br.com.aleson.daily.rewards.app.feature.home.model.Group
 import br.com.aleson.daily.rewards.app.feature.home.model.Tasks
 import br.com.aleson.daily.rewards.app.feature.home.view.viewholder.GroupsViewHolder
-import br.com.aleson.daily.rewards.app.feature.home.view.viewholder.TasksViewHolder
 import br.com.aleson.daily.rewards.app.feature.home.view.viewholder.TasksOptionViewHolder
+import br.com.aleson.daily.rewards.app.feature.home.view.viewholder.TasksViewHolder
+import br.com.aleson.daily.rewards.app.feature.home.view.viewstate.HomeViewEvent
 import br.com.aleson.daily.rewards.app.feature.home.viewmodel.HomeViewModel
 
 
@@ -96,7 +100,6 @@ class ActivitiesFragment : BaseFragment() {
         viewPager = view.findViewById(R.id.view_pager2)
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun setupView() {
         val layoutMutableList = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         tasksRecylerView.addItemDecoration(OverLapDecoration())
@@ -137,17 +140,23 @@ class ActivitiesFragment : BaseFragment() {
 
     override fun oberserverEvent() {
 
-        viewModel.taskslist?.observe(this, Observer { tasks ->
+        this.viewModel.event.observe(this, Observer {
+            when (it) {
+                is HomeViewEvent.OnLoadTasks -> {
+                    loadTasks(it.tasks)
+                }
+                is HomeViewEvent.OnLoadGroups -> {
 
-            tasks.forEach {
-                tasksAdapter.add(BaseAdapterItem(it))
+                }
             }
-            tasksAdapter.add(BaseAdapterItem(option = "wow"))
         })
+    }
 
-        viewModel.groupslist?.observe(this, Observer {
-            gorupsAdapter.add(it)
-        })
+    private fun loadTasks(tasks: List<Tasks>?) {
+        tasks?.forEach {
+            tasksAdapter.add(BaseAdapterItem(it))
+        }
+        tasksAdapter.add(BaseAdapterItem(option = "wow"))
     }
 
     override fun getFragmentLayout(): Int {

@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     tools:layout_height="210dp"
     android:layout_margin="18dp"
+    android:id="@+id/task_holder_containder"
     style="@style/Card">
 
     <ImageView
@@ -35,7 +36,7 @@
         android:layout_height="wrap_content"
         android:textSize="22dp"
         android:text="Fumar Crack na sé"
-        android:textColor="@color/font_light_color"
+        android:textColor="@color/font_dark_color"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
